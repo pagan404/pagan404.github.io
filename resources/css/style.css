@@ -1,0 +1,122 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    font-style: normal;
+    margin: 0;
+    padding: 0;
+    background-color: rgba(126, 148, 43, 0.07);
+}
+
+/* Add a black background color to the top navigation */
+.topnav {
+    background-color: #333;
+    overflow: hidden;
+}
+
+/* Style the links inside the navigation bar */
+.topnav a {
+    float: right;
+    color: #f2f2f2;
+    text-align: center;
+    text-decoration: none;
+    width: 400px;
+    padding-top: 4%;
+    padding-bottom: 4%;
+    font-size: 65px;
+    border-color: white;
+    border-bottom: none;
+    border-top: none;
+}
+
+.branding {
+    float: left;
+    font-size: 53px;
+    color: #f2f2f2;
+    text-align: left;
+    padding-left: 50px;
+    padding-right: 30px;
+    width: 250px;
+    height: min-content;
+}
+
+/* Change the color of links on hover */
+.topnav a:hover {
+    background-color: #ddd;
+    color: black;
+}
+
+/* Add a color to the active/current link */
+.topnav a.active {
+    background-color: #04AA6D;
+    color: white;
+}
+
+/* Style read my blogs text */
+
+.read-my-blog {
+    text-align: center;
+    margin-top: 50px;
+    margin-bottom: 50px;
+}
+
+/* Add work in progress image to the unfinished webpages */
+
+.background-image {
+    width: 800px;
+    height: 650px;
+    background-image: url('/Users/sarunaspaplaukas/Documents/Website/resources/images/work-in-progress.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    margin: auto;
+    margin-bottom: 100px;
+}
+
+/* Style article shorts in the Homepage */
+
+.article-links {
+    text-decoration: none;
+    color: black;
+}
+
+.article-intro {
+    margin: auto;
+    width: 900px;
+    padding-top: 50px;
+    padding-bottom: 100px;
+    padding-right: 10px;
+    border-top: 2px solid rgba(0, 0, 0, 0.3);
+    font-size: larger;
+}
+
+.article-title{
+    font-size: 30px;
+}
+
+.article-date{
+    font-weight: normal;
+    font-style: italic;
+    color: rgba(55, 61, 7, 0.94);
+}
+
+.article-image{
+    float: right;
+    height: 300px;
+    width: 320px;
+    padding-left: 20px;
+}
+
+/* Footer styling */
+
+footer {
+    text-align: center;
+    margin-top: 75px;
+    padding-top: 15px;
+    padding-bottom: 5px;
+    color: white;
+    background-color: #333;
+    font-size: 17px;
+}
