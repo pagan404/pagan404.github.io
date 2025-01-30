@@ -67,7 +67,7 @@ body {
 .background-image {
     width: 800px;
     height: 650px;
-    background-image: url('resources/images/work-in-progress.png');
+    background-image: url('../images/work-in-progress.png');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
