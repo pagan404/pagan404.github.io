@@ -1,0 +1,18 @@
+{
+  "name": "pagans-blog",
+  "version": "1.0.0",
+  "description": "A blog website with Handlebars templating",
+  "main": "build.js",
+  "scripts": {
+    "build": "node build.js",
+    "serve": "http-server . -p 8080",
+    "dev": "npm run build && npm run serve",
+    "add-article": "node add-article.js"
+  },
+  "dependencies": {
+    "handlebars": "^4.7.8"
+  },
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  }
+}
