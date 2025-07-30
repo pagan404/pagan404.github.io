@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{title}}</title>
+    <link href="resources/css/style.css" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="topnav">
+            <h1 class="branding">Pagan's Blog</h1>
+            <a href="workshop.html">Workshop</a>
+            <a href="encodings.html">Encodings</a>
+            <a class="{{#if isHome}}active{{/if}}" href="index.html">Home</a>
+        </div>
+    </header>
+    
+    {{{body}}}
+
+    <footer>
+        <p>This website is made to store my programming projects and an occasional blog. If you'd like to contact me - please don't!</p>
+    </footer>
+</body>
+</html>
