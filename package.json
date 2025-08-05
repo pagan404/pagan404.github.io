@@ -7,12 +7,26 @@
     "build": "node build.js",
     "serve": "http-server . -p 8080",
     "dev": "npm run build && npm run serve",
-    "add-article": "node add-article.js"
+    "add-article": "node add-article.js",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "testMatch": [
+      "**/__tests__/**/*.test.js"
+    ],
+    "collectCoverageFrom": [
+      "src/**/*.js",
+      "!src/**/__tests__/**"
+    ]
   },
   "dependencies": {
     "handlebars": "^4.7.8"
   },
   "devDependencies": {
-    "http-server": "^14.1.1"
+    "http-server": "^14.1.1",
+    "jest": "^30.0.5"
   }
 }
