@@ -293,9 +293,17 @@ function convertBrailleGeneral(word) {
   return word;
 }
 
-module.exports = {
-  textToBraille,
-  brailleToText
+// Universal module definition
+if (typeof module !== 'undefined' && module.exports) {
+    // Node.js environment (for tests)
+    module.exports = {
+        textToBraille,
+        brailleToText
+    };
+} else {
+    // Browser environment (for website)
+    // Functions are already globally available
+    // No action needed - they're declared with 'function' keyword
 }
 
 /* 

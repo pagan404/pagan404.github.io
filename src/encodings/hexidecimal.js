@@ -62,7 +62,15 @@ function hexToDecimal (hex) {
 }
 
 
-module.exports = {
-    decimalToHex,
-    hexToDecimal
-};
+// Universal module definition
+if (typeof module !== 'undefined' && module.exports) {
+    // Node.js environment (for tests)
+    module.exports = {
+        decimalToHex,
+        hexToDecimal
+    };
+} else {
+    // Browser environment (for website)
+    // Functions are already globally available
+    // No action needed - they're declared with 'function' keyword
+}

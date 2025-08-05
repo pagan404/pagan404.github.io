@@ -44,7 +44,15 @@ function binaryToDecimal(binary) {
     return number_str;
 }
 
-module.exports = {
-    decimalToBinary,
-    binaryToDecimal
-};
+// Universal module definition
+if (typeof module !== 'undefined' && module.exports) {
+    // Node.js environment (for tests)
+    module.exports = {
+        decimalToBinary,
+        binaryToDecimal
+    };
+} else {
+    // Browser environment (for website)
+    // Functions are already globally available
+    // No action needed - they're declared with 'function' keyword
+}

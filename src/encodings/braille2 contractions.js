@@ -175,9 +175,17 @@ function convertPunctuation(word) {
 const text = "LOREM Ipsum asphalt but every more, have conceiving beyond already, ever father know,";
 console.log(textToBraille(text));
 
-module.exports = {
-  textToBraille
-};
+// Universal module definition
+if (typeof module !== 'undefined' && module.exports) {
+    // Node.js environment (for tests)
+    module.exports = {
+        textToBraille
+    };
+} else {
+    // Browser environment (for website)
+    // Functions are already globally available
+    // No action needed - they're declared with 'function' keyword
+}
 
 /* 
 What do I want to do here? - I want to convert text to English Braille 2 and from Braille 2 to text using this alphabet as a referrence -
