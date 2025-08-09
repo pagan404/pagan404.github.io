@@ -26,6 +26,7 @@ describe('Braille Translation', () => {
     // expect(brailleToText("⠖⠈⠁⠃⠉⠙⠑⠋⠛⠓⠊⠚⠚⠚")).toBe("!@#$%^&*()"); // The logic for the following 3 tests is not implemented in the provided code
     expect(brailleToText("⠍⠊⠭⠑⠙⠼⠂⠆⠒")).toBe("mixed123");
     expect(brailleToText("⠠⠍⠊⠭⠑⠙⠼⠂⠆⠒")).toBe("Mixed123");
+    expect(brailleToText("⠠⠠⠍⠊⠭⠑⠙⠼⠂⠆⠒")).toBe("MIXED123");
     // expect(brailleToText("⠠⠍⠊⠭⠑⠙⠼⠂⠆⠒⠖")).toBe("Mixed123!");
     expect(brailleToText("⠀")).toBe(" ");
     expect(brailleToText("")).toBe("");
