@@ -34,12 +34,6 @@ function morseToText(morse) {
     .join(' ');
 }
 
-// Example usage
-const text = "This is a test";
-const morse = "- .... .. ...   .. ...   .-   - . ... -";
-console.log(textToMorse(text));
-console.log(morseToText(morse));
-
 
 // In case you're wondering, morse code does not support capital letters, so the conversion is case-insensitive.
 
