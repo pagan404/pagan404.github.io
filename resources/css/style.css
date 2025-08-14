@@ -342,3 +342,105 @@ footer {
     display: block;
     margin-bottom: 0.5rem;
 }
+
+/* ========================================
+   UPDATED ENCODINGS PAGE STYLES
+   ======================================== */
+
+.encodings-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 2rem;
+}
+
+.page-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.page-header h1 {
+    color: #2c3e50;
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.page-header p {
+    color: #666;
+    font-size: 1.2rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Encoding Selector Styles */
+.encoding-selector-container {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.selector-label {
+    display: block;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+}
+
+.encoding-selector {
+    padding: 0.75rem 1.5rem;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    background: white;
+    font-size: 1rem;
+    color: #2c3e50;
+    min-width: 200px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.encoding-selector:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+.encoding-selector:hover {
+    border-color: #3498db;
+}
+
+/* Converter Container */
+.converter-container {
+    background: #f8f9fa;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Updated responsive design for new layout */
+@media (max-width: 768px) {
+    .encodings-container {
+        margin: 1rem;
+        padding: 1rem;
+    }
+    
+    .page-header h1 {
+        font-size: 2rem;
+    }
+    
+    .encoding-selector-container {
+        padding: 1rem;
+    }
+    
+    .encoding-selector {
+        min-width: auto;
+        width: 100%;
+        max-width: 300px;
+    }
+    
+    .converter-container {
+        padding: 1rem;
+    }
+}
