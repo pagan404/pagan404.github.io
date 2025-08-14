@@ -17,51 +17,69 @@
     </header>
 
     <main>
-        <div class="morse-converter">
-            <div class="converter-header">
-                <h2>Morse Code Converter</h2>
-                <p>Convert text to Morse code and back. Type in either field for real-time conversion.</p>
+        <div class="encodings-container">
+            <div class="page-header">
+                <h1>Text Encodings Converter</h1>
+                <p>Convert text between different encoding formats using the tools below.</p>
             </div>
 
-            <div class="converter-help">
-                <strong>How to use:</strong>
-                Enter text in the left box to see Morse code, or enter Morse code in the right box to see text. 
-                Use dots (.) and dashes (-) separated by spaces for Morse code input.
+            <!-- Encoding Type Selector -->
+            <div class="encoding-selector-container">
+                <label for="encoding-selector" class="selector-label">Choose Encoding Type:</label>
+                <select id="encoding-selector" class="encoding-selector">
+                    <option value="morse" selected>Morse Code</option>
+                    <option value="binary">Binary</option>
+                    <option value="braille">Braille</option>
+                    <option value="hex">Hexadecimal</option>
+                </select>
             </div>
 
-            <div class="converter-grid">
-                <div class="input-section">
-                    <h3>Text Input</h3>
-                    <textarea 
-                        id="text-input" 
-                        class="converter-textarea" 
-                        placeholder="Enter your text here..."></textarea>
+            <!-- Universal Converter Interface -->
+            <div class="converter-container">
+                <div class="converter-header">
+                    <h2 id="converter-title">Morse Code Converter</h2>
+                    <p id="converter-description">Convert text to Morse code and back. Type in either field for real-time conversion.</p>
                 </div>
 
-                <div class="output-section">
-                    <h3>Morse Code Output</h3>
-                    <div class="morse-output-wrapper">
+                <div class="converter-help">
+                    <strong>How to use:</strong>
+                    <span id="help-text">Enter text in the left box to see Morse code, or enter Morse code in the right box to see text. Use dots (.) and dashes (-) separated by spaces for Morse code input.</span>
+                </div>
+
+                <div class="converter-grid">
+                    <div class="input-section">
+                        <h3>Text Input</h3>
                         <textarea 
-                            id="morse-output" 
+                            id="text-input" 
                             class="converter-textarea" 
-                            placeholder="Morse code will appear here..."></textarea>
+                            placeholder="Enter your text here..."></textarea>
+                    </div>
+
+                    <div class="output-section">
+                        <h3 id="output-label">Morse Code Output</h3>
+                        <div class="encoded-output-wrapper">
+                            <textarea 
+                                id="encoded-output" 
+                                class="converter-textarea" 
+                                placeholder="Encoded text will appear here..."></textarea>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="converter-controls">
-                <button id="text-to-morse" class="converter-btn primary">
-                    Text → Morse
-                </button>
-                <button id="morse-to-text" class="converter-btn secondary">
-                    Morse → Text
-                </button>
-                <button id="clear-all" class="converter-btn danger">
-                    Clear All
-                </button>
-                <button id="copy-result" class="converter-btn success">
-                    Copy Result
-                </button>
+                <div class="converter-controls">
+                    <button id="text-to-encoded" class="converter-btn primary">
+                        <span id="encode-btn-text">Text → Morse</span>
+                    </button>
+                    <button id="encoded-to-text" class="converter-btn secondary">
+                        <span id="decode-btn-text">Morse → Text</span>
+                    </button>
+                    <button id="clear-all" class="converter-btn danger">
+                        Clear All
+                    </button>
+                    <button id="copy-result" class="converter-btn success">
+                        Copy Result
+                    </button>
+                </div>
             </div>
         </div>
     </main>
@@ -70,7 +88,7 @@
         <p>This website is made to store my programming projects and an occasional blog. If you'd like to contact me - please don't!</p>
     </footer>
 
-    <!-- Load the Morse code module -->
+    <!-- Load the encoding modules -->
     <script src="src/encodings/morse.js"></script>
     <!-- Load the frontend interface -->
     <script src="resources/js/encodings.js"></script>
