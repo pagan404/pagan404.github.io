@@ -1,28 +1,4 @@
-// The script converts decimal numbers to hex and vice vera
-
-// object that maps number values to the hex values
-
-const decimalHex = {
-    0:'0', 1:'1', 2:'2', 3:'3', 4:'4', 5:'5', 6:'6', 7:'7', 8:'8', 9:'9', 
-    10:'A', 11:'B', 12:'C', 13:'D', 14:'E', 15:'F' 
-}
-
-// Reverse decimal hex dictionary
-const hexDecimal = Object.entries(decimalHex).reduce((acc, [key, value]) => {
-    acc[value] = key;
-    return acc;
-  }, {}
-);
-
-// helper function to check if all passed values are valid hex characters
-function isHexString(str) {
-    return /^[\dA-F]+$/.test(str);
-}
-
-// helper function to check if all passed values are valid numerical characters
-function isNumericString(str) {
-    return /^\d+$/.test(str);
-}
+// The script converts decimal numbers and text to hex and vice versa
 
 // function to convert decimal to hex
 
@@ -30,17 +6,22 @@ function decimalToHex(decimal) {
     if (!isNumericString(decimal) || decimal < 0 || !Number.isInteger(Number(decimal))) {
         return "Please enter a valid, whole, non-negative number!";
     }
-    if (decimal < 16) {
-        return decimalHex[decimal];
-    }
-    let hex = '';
-    do {
-        let remainder = decimal % 16;
-        hex = decimalHex[remainder] + hex;
-        decimal = Math.floor(decimal / 16);
-    } while (decimal >= 16)
-    hex = decimalHex[decimal] + hex;
+    let hex = decimal.toString(16).toUpperCase();
     return hex;
+}
+
+console.log(decimalToHex(255)); // Example usage, should return "FF"
+
+// function to convert text to hex
+
+function textToHex(text) {
+    if (typeof text !== 'string') {
+        throw new Error('Input must be a string');
+    }
+    let encodedText = text.split('').map(char => 
+        char.charCodeAt(0).toString(16).toUpperCase()
+    ).join(' ');
+    return encodedText;
 }
 
 // function to convert hex to decimal
@@ -49,25 +30,29 @@ function hexToDecimal (hex) {
     if (!isHexString(hex)) {
         return "Please enter a valid hex string";
     }
-    hex = hex.split('').reverse()
-    let exponent = 0;
-    let decimal = 0;
-    for (let digit of hex) {
-        digit = hexDecimal[digit];
-        let decimalDigit = digit * (16**exponent);
-        decimal = decimal + decimalDigit;
-        exponent += 1;
-    }
+    let decimal = parseInt(hex.split(' ').join(''), 16);
     return decimal;
 }
 
+// function to convert hex to text
+function hexToText(hex) {
+    if (!isHexString(hex)) {
+        return "Please enter a valid hex string";
+    }
+    let decodedText = hex.split(' ').map(hex => 
+        String.fromCharCode(parseInt(hex, 16))
+    ).join('');
+    return decodedText;
+}
 
 // Universal module definition
 if (typeof module !== 'undefined' && module.exports) {
     // Node.js environment (for tests)
     module.exports = {
         decimalToHex,
-        hexToDecimal
+        textToHex,
+        hexToDecimal,
+        hexToText
     };
 } else {
     // Browser environment (for website)
