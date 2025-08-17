@@ -41,6 +41,15 @@
                     <p id="converter-description">Convert text to Morse code and back. Type in either field for real-time conversion.</p>
                 </div>
 
+                <!-- Conversion Type Selector (hidden for Morse, shown for Binary/Hex) -->
+                <div id="conversion-type-container" class="conversion-type-container" style="display: none;">
+                    <label for="conversion-type-selector" class="conversion-type-label">Conversion Type:</label>
+                    <select id="conversion-type-selector" class="conversion-type-selector">
+                        <option value="number" selected>Numbers</option>
+                        <option value="text">Text</option>
+                    </select>
+                </div>
+
                 <div class="converter-help">
                     <strong>How to use:</strong>
                     <span id="help-text">Enter text in the left box to see Morse code, or enter Morse code in the right box to see text. Use dots (.) and dashes (-) separated by spaces for Morse code input.</span>
@@ -48,7 +57,7 @@
 
                 <div class="converter-grid">
                     <div class="input-section">
-                        <h3>Text Input</h3>
+                        <h3 id="input-label">Text Input</h3>
                         <textarea 
                             id="text-input" 
                             class="converter-textarea" 
@@ -90,6 +99,8 @@
 
     <!-- Load the encoding modules -->
     <script src="src/encodings/morse.js"></script>
+    <script src="src/encodings/binary.js"></script>
+    <script src="src/encodings/hexidecimal.js"></script>
     <!-- Load the frontend interface -->
     <script src="resources/js/encodings.js"></script>
 </body>

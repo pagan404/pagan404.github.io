@@ -444,3 +444,104 @@ footer {
         padding: 1rem;
     }
 }
+
+/* Conversion Type Selector Styles */
+.conversion-type-container {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 15px;
+    margin: 15px 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.conversion-type-label {
+    font-weight: 600;
+    color: #495057;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+.conversion-type-selector {
+    padding: 8px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    background: white;
+    font-size: 14px;
+    color: #495057;
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+    min-width: 120px;
+}
+
+.conversion-type-selector:hover {
+    border-color: #80bdff;
+}
+
+.conversion-type-selector:focus {
+    outline: none;
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Enhanced encoding selector container */
+.encoding-selector-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin: 20px 0;
+    padding: 15px;
+    border-radius: 10px;
+    color: white;
+}
+
+.selector-label {
+    font-weight: 600;
+    font-size: 16px;
+    white-space: nowrap;
+}
+
+.encoding-selector {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 6px;
+    background: white;
+    font-size: 15px;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 150px;
+}
+
+.encoding-selector:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.encoding-selector:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+}
+
+/* Responsive design for selectors */
+@media (max-width: 768px) {
+    .encoding-selector-container,
+    .conversion-type-container {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+    
+    .selector-label,
+    .conversion-type-label {
+        text-align: center;
+    }
+    
+    .encoding-selector,
+    .conversion-type-selector {
+        width: 100%;
+        min-width: unset;
+    }
+}
