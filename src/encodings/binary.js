@@ -4,23 +4,26 @@
 
 function decimalToBinary(number) {
     if (!Number.isInteger(number) || number < 0) {
-        return "Please enter a valid, whole, non-negative number!";
+        throw new Error('Please enter a valid, whole, non-negative number!');
     }
-    let binaryText = '';
-    if (number > 0) {
-        while (number > 0) {
-            if (number % 2 === 0) {
-                binaryText = '0' + binaryText;
-            } else {
-                binaryText = '1' + binaryText;
-                number -= 1;
-            }
-            number = Math.floor(number / 2);
-        }
-    } else {
-        binaryText = '0';
-    } 
-    return binaryText;
+    let binary = number.toString(2);
+    // Only pad if not already a multiple of 8
+    if (binary.length % 8 !== 0) {
+        binary = binary.padStart(Math.ceil(binary.length / 8) * 8, '0');
+    }
+    return binary.match(/.{1,8}/g).join(" ");
+}
+
+
+// Function to convert from text to binary
+function textToBinary(text) {
+    if (typeof text !== 'string') {
+        throw new Error('Input must be a string');
+    }
+    
+    return text.split('').map(char => 
+        char.charCodeAt(0).toString(2).padStart(8, '0')
+    ).join(' ');
 }
 
 // Logic to convert from binary to decimal
@@ -32,16 +35,25 @@ function isBinaryString(str) {
 
 // Function to convert from binary to decimal
 function binaryToDecimal(binary) {
-    binary = binary.trim();
+    binary = binary.trim().split(' ').join(''); // Remove spaces
     if (!isBinaryString(binary)) {
         return "Please enter a valid binary string";
     }
-    let number = 0;
-    for (let digit of binary) {
-        number = number * 2 + parseInt(digit, 10);
+    return parseInt(binary, 2).toString();
+}
+
+// Function to convert from binary to text
+
+function binaryToText(binary) {
+    const binaryArray = binary.split(' ');
+    let text = '';
+    for (let i = 0; i < binaryArray.length; i++) {
+        const charCode = parseInt(binaryArray[i], 2);
+        if (!isNaN(charCode)) {
+            text += String.fromCharCode(charCode);
+        }
     }
-    const number_str = number.toString(); 
-    return number_str;
+    return text;
 }
 
 // Universal module definition
@@ -49,7 +61,9 @@ if (typeof module !== 'undefined' && module.exports) {
     // Node.js environment (for tests)
     module.exports = {
         decimalToBinary,
-        binaryToDecimal
+        textToBinary,
+        binaryToDecimal,
+        binaryToText
     };
 } else {
     // Browser environment (for website)
