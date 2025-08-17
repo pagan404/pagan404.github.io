@@ -10,8 +10,6 @@ function decimalToHex(decimal) {
     return hex;
 }
 
-console.log(decimalToHex(255)); // Example usage, should return "FF"
-
 // function to convert text to hex
 
 function textToHex(text) {

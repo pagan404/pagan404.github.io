@@ -1,4 +1,4 @@
-// The scripts converts decimal numbers to binary and vice versa
+// The scripts converts decimal numbers and text to binary and vice versa
 
 // Function to convert from decimal to binary
 
@@ -20,7 +20,7 @@ function textToBinary(text) {
     if (typeof text !== 'string') {
         throw new Error('Input must be a string');
     }
-    
+
     return text.split('').map(char => 
         char.charCodeAt(0).toString(2).padStart(8, '0')
     ).join(' ');
