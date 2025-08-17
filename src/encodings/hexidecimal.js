@@ -1,5 +1,15 @@
 // The script converts decimal numbers and text to hex and vice versa
 
+// helper functions
+
+function isHexString(str) {
+    return /^[\dA-F]+$/.test(str);
+}
+
+function isNumericString(str) {
+    return /^\d+$/.test(str);
+}
+
 // function to convert decimal to hex
 
 function decimalToHex(decimal) {
@@ -14,7 +24,7 @@ function decimalToHex(decimal) {
 
 function textToHex(text) {
     if (typeof text !== 'string') {
-        throw new Error('Input must be a string');
+        return 'Input must be a string';
     }
     let encodedText = text.split('').map(char => 
         char.charCodeAt(0).toString(16).toUpperCase()

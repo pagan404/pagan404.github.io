@@ -4,7 +4,7 @@
 
 function decimalToBinary(number) {
     if (!Number.isInteger(number) || number < 0) {
-        throw new Error('Please enter a valid, whole, non-negative number!');
+        return "Please enter a valid, whole, non-negative number!";
     }
     let binary = number.toString(2);
     // Only pad if not already a multiple of 8
@@ -18,7 +18,7 @@ function decimalToBinary(number) {
 // Function to convert from text to binary
 function textToBinary(text) {
     if (typeof text !== 'string') {
-        throw new Error('Input must be a string');
+        return "Input must be a string";
     }
 
     return text.split('').map(char => 
@@ -45,6 +45,9 @@ function binaryToDecimal(binary) {
 // Function to convert from binary to text
 
 function binaryToText(binary) {
+    if (!isBinaryString(binary.trim().split(' ').join(''))) {
+        return "Please enter a valid binary string";
+    }
     const binaryArray = binary.split(' ');
     let text = '';
     for (let i = 0; i < binaryArray.length; i++) {
