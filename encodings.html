@@ -41,7 +41,7 @@
                     <p id="converter-description">Convert text to Morse code and back. Type in either field for real-time conversion.</p>
                 </div>
 
-                <!-- Conversion Type Selector (hidden for Morse, shown for Binary/Hex) -->
+                <!-- Conversion Type Selector (hidden for Morse, shown for Binary/Hex/Braille) -->
                 <div id="conversion-type-container" class="conversion-type-container" style="display: none;">
                     <label for="conversion-type-selector" class="conversion-type-label">Conversion Type:</label>
                     <select id="conversion-type-selector" class="conversion-type-selector">
@@ -101,6 +101,9 @@
     <script src="src/encodings/morse.js"></script>
     <script src="src/encodings/binary.js"></script>
     <script src="src/encodings/hexidecimal.js"></script>
+    <script src="src/encodings/braille1_unique.js"></script>
+    <script src="src/encodings/braille2_unique.js"></script>
+    <script src="src/encodings/braille2_contractions_unique.js"></script>
     <!-- Load the frontend interface -->
     <script src="resources/js/encodings.js"></script>
 </body>

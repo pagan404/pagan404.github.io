@@ -1,20 +1,7 @@
-// Frontend interface for encoding functionality
-// Loads the UMD morse module and handles user interactions
-
-// Import the morse module (works with UMD pattern)
-let morse;
-if (typeof require !== 'undefined') {
-    // Node.js environment
-    morse = require('../../scripts/morse.js');
-} else {
-    // Browser environment - morse is loaded via script tag
-    // The morse module will be available globally
-}
-
 class EncodingsInterface {
     constructor() {
         this.currentEncoding = 'morse';
-        this.currentConversionType = 'number'; // Default for binary/hex
+        this.currentConversionType = 'number'; // Default for binary/hex, or braille mode for braille
         this.encodingConfigs = {
             morse: {
                 title: 'Morse Code Converter',
@@ -38,13 +25,13 @@ class EncodingsInterface {
             },
             braille: {
                 title: 'Braille Converter',
-                description: 'Convert text to Braille patterns and back.',
+                description: 'Convert text to Braille patterns. Choose your Braille format above.',
                 inputLabel: 'Text Input',
                 outputLabel: 'Braille Output',
                 encodeBtn: 'Text → Braille',
                 decodeBtn: 'Braille → Text',
-                helpText: 'Enter text to convert to Braille patterns, or Braille to convert back to text.',
-                showConversionType: false
+                helpText: 'Choose between Braille 1, Braille 2, or Braille 2 with Contractions above. Enter text to convert to Braille patterns.',
+                showConversionType: true
             },
             hex: {
                 title: 'Hexadecimal Converter',
@@ -77,7 +64,7 @@ class EncodingsInterface {
             });
         }
 
-        // Conversion type selector (for binary/hex)
+        // Conversion type selector (for binary/hex/braille)
         const conversionTypeSelector = document.getElementById('conversion-type-selector');
         if (conversionTypeSelector) {
             conversionTypeSelector.addEventListener('change', (e) => {
@@ -138,11 +125,14 @@ class EncodingsInterface {
         this.updateElement('encode-btn-text', config.encodeBtn);
         this.updateElement('decode-btn-text', config.decodeBtn);
 
-        // Show/hide conversion type selector
+        // Show/hide conversion type selector and update options
         const conversionTypeContainer = document.getElementById('conversion-type-container');
-        if (conversionTypeContainer) {
+        const conversionTypeSelector = document.getElementById('conversion-type-selector');
+        
+        if (conversionTypeContainer && conversionTypeSelector) {
             if (config.showConversionType) {
                 conversionTypeContainer.style.display = 'block';
+                this.updateConversionTypeOptions();
                 this.updateLabelsForConversionType();
             } else {
                 conversionTypeContainer.style.display = 'none';
@@ -153,21 +143,85 @@ class EncodingsInterface {
         this.updatePlaceholders();
     }
 
-    // Update labels based on conversion type for binary/hex
+    // Update conversion type selector options based on encoding
+    updateConversionTypeOptions() {
+        const conversionTypeSelector = document.getElementById('conversion-type-selector');
+        if (!conversionTypeSelector) return;
+
+        // Clear existing options
+        conversionTypeSelector.innerHTML = '';
+
+        if (this.currentEncoding === 'braille') {
+            // Braille-specific options
+            const braille1Option = new Option('Braille 1', 'braille1', true);
+            const braille2Option = new Option('Braille 2', 'braille2');
+            const braille2ContractionsOption = new Option('Braille 2 + Contractions', 'braille2_contractions');
+            
+            conversionTypeSelector.appendChild(braille1Option);
+            conversionTypeSelector.appendChild(braille2Option);
+            conversionTypeSelector.appendChild(braille2ContractionsOption);
+            
+            // Set default to braille1
+            this.currentConversionType = 'braille1';
+        } else {
+            // Binary/Hex options
+            const numberOption = new Option('Numbers', 'number', true);
+            const textOption = new Option('Text', 'text');
+            
+            conversionTypeSelector.appendChild(numberOption);
+            conversionTypeSelector.appendChild(textOption);
+            
+            // Set default to number
+            this.currentConversionType = 'number';
+        }
+    }
+
+    // Update labels based on conversion type for binary/hex/braille
     updateLabelsForConversionType() {
         const config = this.encodingConfigs[this.currentEncoding];
         if (!config || !config.showConversionType) return;
 
-        const isNumber = this.currentConversionType === 'number';
-        
-        if (this.currentEncoding === 'binary') {
-            this.updateElement('input-label', isNumber ? 'Decimal Number' : 'Text Input');
-            this.updateElement('encode-btn-text', isNumber ? 'Decimal → Binary' : 'Text → Binary');
-            this.updateElement('decode-btn-text', isNumber ? 'Binary → Decimal' : 'Binary → Text');
-        } else if (this.currentEncoding === 'hex') {
-            this.updateElement('input-label', isNumber ? 'Decimal Number' : 'Text Input');
-            this.updateElement('encode-btn-text', isNumber ? 'Decimal → Hex' : 'Text → Hex');
-            this.updateElement('decode-btn-text', isNumber ? 'Hex → Decimal' : 'Hex → Text');
+        if (this.currentEncoding === 'braille') {
+            // Update labels for Braille modes
+            this.updateElement('input-label', 'Text Input');
+            this.updateElement('encode-btn-text', 'Text → Braille');
+            
+            // Check if contractions mode is selected
+            if (this.currentConversionType === 'braille2_contractions') {
+                this.updateElement('decode-btn-text', 'One-way only');
+                // Disable the encoded output field for input
+                const encodedOutput = document.getElementById('encoded-output');
+                if (encodedOutput) {
+                    encodedOutput.disabled = true;
+                    encodedOutput.placeholder = 'Braille with contractions (one-way conversion only)';
+                }
+            } else {
+                this.updateElement('decode-btn-text', 'Braille → Text');
+                // Enable the encoded output field for input
+                const encodedOutput = document.getElementById('encoded-output');
+                if (encodedOutput) {
+                    encodedOutput.disabled = false;
+                }
+            }
+        } else {
+            // Binary/Hex mode updates
+            const isNumber = this.currentConversionType === 'number';
+            
+            if (this.currentEncoding === 'binary') {
+                this.updateElement('input-label', isNumber ? 'Decimal Number' : 'Text Input');
+                this.updateElement('encode-btn-text', isNumber ? 'Decimal → Binary' : 'Text → Binary');
+                this.updateElement('decode-btn-text', isNumber ? 'Binary → Decimal' : 'Binary → Text');
+            } else if (this.currentEncoding === 'hex') {
+                this.updateElement('input-label', isNumber ? 'Decimal Number' : 'Text Input');
+                this.updateElement('encode-btn-text', isNumber ? 'Decimal → Hex' : 'Text → Hex');
+                this.updateElement('decode-btn-text', isNumber ? 'Hex → Decimal' : 'Hex → Text');
+            }
+            
+            // Re-enable encoded output for binary/hex
+            const encodedOutput = document.getElementById('encoded-output');
+            if (encodedOutput) {
+                encodedOutput.disabled = false;
+            }
         }
 
         this.updatePlaceholders();
@@ -204,8 +258,12 @@ class EncodingsInterface {
                 }
                 break;
             case 'braille':
-                textInput.placeholder = 'Enter your text here...';
-                encodedOutput.placeholder = 'Braille patterns will appear here...';
+                textInput.placeholder = 'Enter text to convert to Braille...';
+                if (this.currentConversionType === 'braille2_contractions') {
+                    encodedOutput.placeholder = 'Braille with contractions (one-way conversion only)';
+                } else {
+                    encodedOutput.placeholder = 'Braille patterns will appear here...';
+                }
                 break;
         }
     }
@@ -228,28 +286,52 @@ class EncodingsInterface {
             
             switch (this.currentEncoding) {
                 case 'morse':
-                    if (typeof window.textToMorse !== 'undefined') {
+                    if (typeof window.textToMorse === 'function') {
                         result = window.textToMorse(inputText);
                     }
                     break;
                 case 'binary':
                     if (this.currentConversionType === 'number') {
                         const num = parseInt(inputText);
-                        if (!isNaN(num)) {
-                            result = window.binaryToDecimal(num);
+                        if (!isNaN(num) && typeof window.decimalToBinary === 'function') {
+                            result = window.decimalToBinary(num);
                         }
                     } else {
-                        result = window.binaryToText(inputText);
+                        if (typeof window.textToBinary === 'function') {
+                            result = window.textToBinary(inputText);
+                        }
                     }
                     break;
                 case 'hex':
                     if (this.currentConversionType === 'number') {
                         const num = parseInt(inputText);
-                        if (!isNaN(num)) {
-                            result = window.hexToDecimal(num);
+                        if (!isNaN(num) && typeof window.decimalToHex === 'function') {
+                            result = window.decimalToHex(num);
                         }
                     } else {
-                        result = window.hexToText(inputText);
+                        if (typeof window.textToHex === 'function') {
+                            result = window.textToHex(inputText);
+                        }
+                    }
+                    break;
+                case 'braille':
+                    // Handle different Braille modes with unique function names
+                    switch (this.currentConversionType) {
+                        case 'braille1':
+                            if (typeof window.textToBraille1 === 'function') {
+                                result = window.textToBraille1(inputText);
+                            }
+                            break;
+                        case 'braille2':
+                            if (typeof window.textToBraille2 === 'function') {
+                                result = window.textToBraille2(inputText);
+                            }
+                            break;
+                        case 'braille2_contractions':
+                            if (typeof window.textToBrailleContractions === 'function') {
+                                result = window.textToBrailleContractions(inputText);
+                            }
+                            break;
                     }
                     break;
             }
@@ -268,6 +350,11 @@ class EncodingsInterface {
         
         if (!textInput || !encodedOutput) return;
 
+        // Don't allow reverse conversion for Braille contractions
+        if (this.currentEncoding === 'braille' && this.currentConversionType === 'braille2_contractions') {
+            return;
+        }
+
         const encodedText = encodedOutput.value;
         if (!encodedText.trim()) {
             textInput.value = '';
@@ -279,22 +366,46 @@ class EncodingsInterface {
             
             switch (this.currentEncoding) {
                 case 'morse':
-                    if (typeof window.morseToText !== 'undefined') {
+                    if (typeof window.morseToText === 'function') {
                         result = window.morseToText(encodedText);
                     }
                     break;
                 case 'binary':
                     if (this.currentConversionType === 'number') {
-                        result = window.binaryToDecimal(encodedText).toString();
+                        if (typeof window.binaryToDecimal === 'function') {
+                            result = window.binaryToDecimal(encodedText);
+                        }
                     } else {
-                        result = window.binaryToText(encodedText);
+                        if (typeof window.binaryToText === 'function') {
+                            result = window.binaryToText(encodedText);
+                        }
                     }
                     break;
                 case 'hex':
                     if (this.currentConversionType === 'number') {
-                        result = window.hexToDecimal(encodedText).toString();
+                        if (typeof window.hexToDecimal === 'function') {
+                            result = window.hexToDecimal(encodedText);
+                        }
                     } else {
-                        result = window.hexToText(encodedText);
+                        if (typeof window.hexToText === 'function') {
+                            result = window.hexToText(encodedText);
+                        }
+                    }
+                    break;
+                case 'braille':
+                    // Handle reverse Braille conversion with unique function names
+                    switch (this.currentConversionType) {
+                        case 'braille1':
+                            if (typeof window.braille1ToText === 'function') {
+                                result = window.braille1ToText(encodedText);
+                            }
+                            break;
+                        case 'braille2':
+                            if (typeof window.braille2ToText === 'function') {
+                                result = window.braille2ToText(encodedText);
+                            }
+                            break;
+                        // braille2_contractions has no reverse function (one-way only)
                     }
                     break;
             }
@@ -313,6 +424,11 @@ class EncodingsInterface {
 
     // Convert encoded format to text
     convertEncodedToText() {
+        // Don't allow reverse conversion for Braille contractions
+        if (this.currentEncoding === 'braille' && this.currentConversionType === 'braille2_contractions') {
+            alert('Braille with contractions cannot be converted back to text accurately. This is a one-way conversion only.');
+            return;
+        }
         this.handleEncodedInput();
     }
 

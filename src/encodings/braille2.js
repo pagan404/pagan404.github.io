@@ -1,67 +1,64 @@
-// Small script to convert text to braille and back
+// Braille 2 converter with unique function names
+// Based on braille2.js but with namespaced functions
 
 // Braille grade 2 dictionaries
-const lettersBraille = {
+const lettersBraille2 = {
   'a': '⠁', 'b': '⠃', 'c': '⠉', 'd': '⠙', 'e': '⠑', 'f': '⠋', 'g': '⠛', 'h': '⠓', 'i': '⠊', 'j': '⠚',
   'k': '⠅', 'l': '⠇', 'm': '⠍', 'n': '⠝', 'o': '⠕', 'p': '⠏', 'q': '⠟', 'r': '⠗', 's': '⠎', 't': '⠞',
   'u': '⠥', 'v': '⠧', 'w': '⠺', 'x': '⠭', 'y': '⠽', 'z': '⠵', 
 };
 
-const punctuationSpecialSymbolsBraille = {
+const punctuationSpecialSymbolsBraille2 = {
   '.': '⠲', ',': '⠂', ';': '⠆', ':': '⠒', '?': '⠦', '!': '⠖', '"': '⠶', '(': '⠐⠣', ')': '⠐⠜', '[': '⠶⠣', ']': '⠶⠜',
   '/': '⠸⠌', '\\': '⠸⠡', '-': '⠤', '_': '⠨⠤', '@': '⠈⠁', '#': '⠨⠼', '$': '⠈⠎', '%': '⠨⠴', '&': '⠈⠯', '*': '⠐⠔', 
   '+': '⠐⠖', '=': '⠐⠶', '<': '⠈⠣', '>': '⠈⠜', '^': '⠈⠢', '~': '⠈⠔', '`': '⠈⠑', '|': '⠸⠳','{': '⠸⠣', '}': '⠸⠜'
 }
 
-const numberBraille = {
+const numberBraille2 = {
   '0': '⠴', '1': '⠂', '2': '⠆', '3': '⠒', '4': '⠲', '5': '⠢', '6': '⠖', '7': '⠶', '8': '⠦', '9': '⠔',
 };
 
 // Reverse Braille code dictionaries
-  const brailleLetters = Object.entries(lettersBraille).reduce((acc, [key, value]) => {
-    acc[value] = key;
-    return acc;
-  }, {}
-);
-
-const braillePunctuationSpecialSymbols = Object.entries(punctuationSpecialSymbolsBraille).reduce((acc, [key, value]) => {
+const braille2Letters = Object.entries(lettersBraille2).reduce((acc, [key, value]) => {
   acc[value] = key;
   return acc;
-}, {}
-);
+}, {});
 
-const brailleNumbers = Object.entries(numberBraille).reduce((acc, [key, value]) => {
+const braille2PunctuationSpecialSymbols = Object.entries(punctuationSpecialSymbolsBraille2).reduce((acc, [key, value]) => {
   acc[value] = key;
   return acc;
-}, {}
-);
+}, {});
+
+const braille2Numbers = Object.entries(numberBraille2).reduce((acc, [key, value]) => {
+  acc[value] = key;
+  return acc;
+}, {});
 
 // Combined Braille code dictionaries
-
-const allBraille = Object.assign({}, lettersBraille, punctuationSpecialSymbolsBraille, numberBraille);
-const brailleAll = Object.assign({}, brailleLetters, braillePunctuationSpecialSymbols);
+const allBraille2 = Object.assign({}, lettersBraille2, punctuationSpecialSymbolsBraille2, numberBraille2);
+const braille2All = Object.assign({}, braille2Letters, braille2PunctuationSpecialSymbols);
 
 // Function to convert text to Braille code
-function textToBraille(text) {
+function textToBraille2(text) {
   const words = text.split(' ');
-  return words.map(word => convertWordToBraille(word)).join('⠀'); // I'm joining them together with a space character of Braille in between the words.
+  return words.map(word => convertWordToBraille2(word)).join('⠀');
 }
 
-function convertWordToBraille(word) {
-  if (containsMixedCharacters(word)) {
-    return convertMixedCharacters(word);
+function convertWordToBraille2(word) {
+  if (containsMixedCharacters2(word)) {
+    return convertMixedCharacters2(word);
   } else if (/[a-z]/.test(word[0])) {
-    return convertLowerCase(word);
+    return convertLowerCase2(word);
   } else if (/[A-Z]/.test(word[0])) {
-    return convertUpperCase(word);
+    return convertUpperCase2(word);
   } else if (/\d/.test(word[0])) {
-    return convertNumbers(word);
+    return convertNumbers2(word);
   } else {
-    return convertPunctuation(word);
+    return convertPunctuation2(word);
   }
 }
 
-function containsMixedCharacters(word) {
+function containsMixedCharacters2(word) {
   return (
     word.match(/[a-zA-Z].*[^a-zA-Z]/) ||
     word.match(/[^a-zA-Z].*[a-zA-Z]/) ||
@@ -70,39 +67,31 @@ function containsMixedCharacters(word) {
   );
 }
 
-function convertMixedCharacters(word) {
-  // Handle capital letter first (if present)
+function convertMixedCharacters2(word) {
   if (/[A-Z]/.test(word[0])) {
-    word = '⠠' + word.toLowerCase(); // In braille, capital letters have to be indicated by '⠠'
+    word = '⠠' + word.toLowerCase();
   }
   
-  // Insert numeric indicator before numbers
   let result = '';
   let inNumberMode = false;
   
-  // Process character by character
   for (let i = 0; i < word.length; i++) {
     let char = word[i];
     
-    // Check if current character is a number
     if (/\d/.test(char)) {
-      // Add numeric indicator if we're not already in number mode
       if (!inNumberMode) {
         result += '⠼';
         inNumberMode = true;
       }
     } else {
-      // Exit number mode when encountering non-digit
       inNumberMode = false;
     }
     
     result += char;
   }
   
-  // Now replace all characters with their Braille equivalents
-  for (const [key, value] of Object.entries(allBraille)) {
+  for (const [key, value] of Object.entries(allBraille2)) {
     if (result.includes(key)) {
-      // Escape special regex characters before creating RegExp
       const escapedKey = key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
       result = result.replace(new RegExp(escapedKey, 'g'), value);
     }
@@ -111,8 +100,8 @@ function convertMixedCharacters(word) {
   return result;
 }
 
-function convertLowerCase(word) {
-  for (const [key, value] of Object.entries(lettersBraille)) {
+function convertLowerCase2(word) {
+  for (const [key, value] of Object.entries(lettersBraille2)) {
     if (word.includes(key)) {
       word = word.replace(new RegExp(key, 'g'), value);
     }
@@ -120,21 +109,22 @@ function convertLowerCase(word) {
   return word;
 }
 
-function convertUpperCase(word) {
+function convertUpperCase2(word) {
   if (/[A-Z]/.test(word[1])) {
-    word = '⠠⠠' + word; // In braille, all caps letters have to be indicated by '⠠⠠'
+    word = '⠠⠠' + word;
   } else {
-    word = '⠠' + word; // In braille, capital letters have to be indicated by '⠠'
+    word = '⠠' + word;
   } 
   word = word.toLowerCase();
-  for (const [key, value] of Object.entries(lettersBraille)) {
+  for (const [key, value] of Object.entries(lettersBraille2)) {
     word = word.replace(new RegExp(key, 'g'), value);
-  } return word;
+  }
+  return word;
 }
 
-function convertNumbers(word) {
-  word = '⠼' + word; // In braille, numbers have to be indicated by '⠼'
-  for (const [key, value] of Object.entries(numberBraille)) {
+function convertNumbers2(word) {
+  word = '⠼' + word;
+  for (const [key, value] of Object.entries(numberBraille2)) {
     if (word.includes(key)) {
       word = word.replace(new RegExp(key, 'g'), value);
     }
@@ -142,10 +132,9 @@ function convertNumbers(word) {
   return word;
 }
 
-function convertPunctuation(word) {
-  for (const [key, value] of Object.entries(punctuationSpecialSymbolsBraille)) {
+function convertPunctuation2(word) {
+  for (const [key, value] of Object.entries(punctuationSpecialSymbolsBraille2)) {
     if (word.includes(key)) {
-      // Escape special regex characters before creating RegExp
       const escapedKey = key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
       word = word.replace(new RegExp(escapedKey, 'g'), value);
     }
@@ -154,22 +143,22 @@ function convertPunctuation(word) {
 }
 
 // Function to convert Braille code to text
-function brailleToText(braille) {
+function braille2ToText(braille) {
   const words = braille.split('⠀');
   return words.map(word => {
     if (word[0] === '⠼') {
-      return convertBrailleNumber(word);
+      return convertBrailleNumber2(word);
     } else if (word[0] === '⠠') {
-      return convertBrailleUpperCase(word);
+      return convertBrailleUpperCase2(word);
     } else {
-      return convertBrailleGeneral(word);
+      return convertBrailleGeneral2(word);
     }
   }).join(' ');
 }
 
-function convertBrailleNumber(word) {
+function convertBrailleNumber2(word) {
   word = word.slice(1);
-  for (const [key, value] of Object.entries(brailleNumbers)) {
+  for (const [key, value] of Object.entries(braille2Numbers)) {
     if (word.includes(key)) {
       word = word.replace(new RegExp(key, 'g'), value);
     }
@@ -177,133 +166,56 @@ function convertBrailleNumber(word) {
   return word;
 }
 
-function convertBrailleUpperCase(word) {
+function convertBrailleUpperCase2(word) {
   if (word[1] === '⠠') {
-    // All caps case
     word = word.slice(2);
-    
-    // Check for numeric indicator in the word
-    const hasNumberIndicator = word.includes('⠼');
-    
-    // Remove numeric indicators before processing
-    let processedWord = word.replace(/⠼/g, '');
-    
-    // Process numbers and letters
-    if (hasNumberIndicator) {
-      // Handle numbers first
-      for (const [key, value] of Object.entries(brailleNumbers)) {
-        if (processedWord.includes(key)) {
-          processedWord = processedWord.replace(new RegExp(key, 'g'), value);
-        }
+    for (const [key, value] of Object.entries(braille2All)) {
+      if (word.includes(key)) {
+        word = word.replace(new RegExp(key, 'g'), value);
       }
     }
-    
-    // Handle all other characters
-    for (const [key, value] of Object.entries(brailleAll)) {
-      if (processedWord.includes(key)) {
-        processedWord = processedWord.replace(new RegExp(key, 'g'), value);
-      }
-    }
-    
-    return processedWord.toUpperCase();
+    return word.toUpperCase();
   } else {
-    // First letter capitalized
     word = word.slice(1);
-    
-    // Check for numeric indicator
-    const hasNumberIndicator = word.includes('⠼');
-    if (hasNumberIndicator) {
-      // This word has numbers - need to handle specially
-      word = word.replace(/⠼/g, ''); // Remove numeric indicators
-      
-      // Get first character and make uppercase
-      const firstChar = word[0];
-      let upperFirst = brailleAll[firstChar];
-      if (upperFirst) {
-        upperFirst = upperFirst.toUpperCase();
-      } else {
-        // If first char is a number, don't capitalize
-        upperFirst = brailleNumbers[firstChar] || firstChar;
-      }
-      
-      const restOfWord = word.slice(1);
-      let translatedRest = restOfWord;
-      
-      // Process numbers in the rest of the word
-      for (const [key, value] of Object.entries(brailleNumbers)) {
-        if (translatedRest.includes(key)) {
-          translatedRest = translatedRest.replace(new RegExp(key, 'g'), value);
-        }
-      }
-      
-      // Process other characters
-      for (const [key, value] of Object.entries(brailleAll)) {
-        if (translatedRest.includes(key)) {
-          translatedRest = translatedRest.replace(new RegExp(key, 'g'), value);
-        }
-      }
-      
-      return upperFirst + translatedRest;
+    const firstChar = word[0];
+    let upperFirst = braille2All[firstChar];
+    if (upperFirst) {
+      upperFirst = upperFirst.toUpperCase();
     } else {
-      // Original implementation for word without numbers
-      const firstChar = word[0];
-      const upperFirst = brailleAll[firstChar].toUpperCase();
-      const restOfWord = word.slice(1);
-      let translatedRest = restOfWord;
-      
-      for (const [key, value] of Object.entries(brailleAll)) { 
+      upperFirst = '';
+    }
+    
+    const restOfWord = word.slice(1);
+    let translatedRest = restOfWord;
+    
+    for (const [key, value] of Object.entries(braille2All)) {
+      if (translatedRest.includes(key)) {
         translatedRest = translatedRest.replace(new RegExp(key, 'g'), value);
       }
-      
-      return upperFirst + translatedRest;
     }
+    
+    return upperFirst + translatedRest;
   }
 }
 
-function convertBrailleGeneral(word) {
-  // Check if the word contains a numeric indicator
-  const hasNumberIndicator = word.includes('⠼');
-  
-  // Remove the numeric indicator(s) before processing
-  word = word.replace(/⠼/g, '');
-  
-  if (hasNumberIndicator) {
-    // Use the numbers-aware dictionary for the entire word
-    for (const [key, value] of Object.entries(brailleNumbers)) {
-      if (word.includes(key)) {
-        word = word.replace(new RegExp(key, 'g'), value);
-      }
-    }
-    
-    // Process any remaining characters with the regular dictionary
-    for (const [key, value] of Object.entries(brailleAll)) {
-      if (word.includes(key)) {
-        word = word.replace(new RegExp(key, 'g'), value);
-      }
-    }
-  } else {
-    // No numeric indicator, use regular dictionary
-    for (const [key, value] of Object.entries(brailleAll)) {
-      if (word.includes(key)) {
-        word = word.replace(new RegExp(key, 'g'), value);
-      }
+function convertBrailleGeneral2(word) {
+  for (const [key, value] of Object.entries(braille2All)) {
+    if (word.includes(key)) {
+      word = word.replace(new RegExp(key, 'g'), value);
     }
   }
-  
   return word;
 }
 
 // Universal module definition
 if (typeof module !== 'undefined' && module.exports) {
-    // Node.js environment (for tests)
     module.exports = {
-        textToBraille,
-        brailleToText
+        textToBraille2,
+        braille2ToText
     };
 } else {
-    // Browser environment (for website)
-    // Functions are already globally available
-    // No action needed - they're declared with 'function' keyword
+    window.textToBraille2 = textToBraille2;
+    window.braille2ToText = braille2ToText;
 }
 
 /* 

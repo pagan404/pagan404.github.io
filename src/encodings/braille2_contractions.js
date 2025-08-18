@@ -1,20 +1,21 @@
-// Small script to convert text to braille and back
+// Braille 2 with Contractions converter with unique function names
+// Based on braille2 contractions.js but with namespaced functions
 
 // Braille grade 2 dictionaries
-const lowerCaseBraille = {
+const lowerCaseBrailleContractions = {
   'a': '⠁', 'b': '⠃', 'c': '⠉', 'd': '⠙', 'e': '⠑', 'f': '⠋', 'g': '⠛', 'h': '⠓', 'i': '⠊', 'j': '⠚',
   'k': '⠅', 'l': '⠇', 'm': '⠍', 'n': '⠝', 'o': '⠕', 'p': '⠏', 'q': '⠟', 'r': '⠗', 's': '⠎', 't': '⠞',
   'u': '⠥', 'v': '⠧', 'w': '⠺', 'x': '⠭', 'y': '⠽', 'z': '⠵', 
 };
 
-const wordSignBraille = {
+const wordSignBrailleContractions = {
   'but': '⠃', 'can': '⠉', 'do': '⠙', 'every': '⠑', 'from': '⠋', 'go': '⠛', 'have': '⠓',
   'just': '⠚', 'knowledge': '⠅', 'like': '⠇', 'more': '⠍', 'not': '⠝', 'people': '⠏', 'quite': '⠟',
   'rather': '⠗', 'so': '⠎', 'that': '⠞', 'us': '⠥', 'very': '⠧', 'will': '⠺', 'it': '⠭', 'you': '⠽',
   'as': '⠵'
 };
 
-const shortFormBraille = {
+const shortFormBrailleContractions = {
   'about': '⠁⠃', 'above': '⠁⠃⠧', 'according': '⠁⠉', 'across': '⠁⠉⠗', 'after': '⠁⠋', 'afternoon': '⠁⠋⠝',
   'afterward': '⠁⠋⠺', 'again': '⠁⠛', 'against': '⠁⠛⠌', 'almost': '⠁⠇⠍', 'already': '⠁⠇⠗', 'also': '⠁⠇',
   'although': '⠁⠇⠹', 'altogether': '⠁⠇⠞', 'always': '⠁⠇⠺', 'before': '⠃⠋', 'behind': '⠃⠓', 'below': '⠃⠇',
@@ -29,57 +30,49 @@ const shortFormBraille = {
   'would': '⠺⠙', 'your': '⠽⠗', 'yourself': '⠽⠗⠋', 'yourselves': '⠽⠗⠧⠎'
 };
 
-const initialLetterBraille = {
-  // dot 5 contractions
+const initialLetterBrailleContractions = {
   'day': '⠐⠙', 'ever': '⠐⠑', 'father': '⠐⠋', 'here': '⠐⠓', 'know': '⠐⠅', 'lord': '⠐⠇', 
   'mother': '⠐⠍', 'name': '⠐⠝', 'one': '⠐⠕', 'part': '⠐⠏', 'question': '⠐⠟', 'right': '⠐⠗',
   'some': '⠐⠎', 'time': '⠐⠞', 'under': '⠐⠥', 'work': '⠐⠺', 'young': '⠐⠽',
-  
-  // dot 45 contractions
   'upon': '⠨⠥', 'these': '⠨⠮', 'those': '⠨⠹', 'whose': '⠨⠱', 'where': '⠨⠺', 'through': '⠨⠹',
-  
-  // dot 456 contractions
-  'character': '⠸⠉', 'ought': '⠸⠕', 'there': '⠸⠮', 'where': '⠸⠺', 'were': '⠸⠺'
+  'character': '⠸⠉', 'ought': '⠸⠕', 'there': '⠸⠮', 'were': '⠸⠺'
 };
 
-const punctuationSpecialSymbolsBraille = {
+const punctuationSpecialSymbolsBrailleContractions = {
   '.': '⠲', ',': '⠂', ';': '⠆', ':': '⠒', '?': '⠦', '!': '⠖', '"': '⠶', '(': '⠐⠣', ')': '⠐⠜', '[': '⠶⠣', ']': '⠶⠜',
   '/': '⠸⠌', '\\': '⠸⠡', '-': '⠤', '_': '⠨⠤', '@': '⠈⠁', '#': '⠨⠼', '$': '⠈⠎', '%': '⠨⠴', '&': '⠈⠯', '*': '⠐⠔', 
 '+': '⠐⠖', '=': '⠐⠶', '<': '⠈⠣', '>': '⠈⠜', '^': '⠈⠢', '~': '⠈⠔', '`': '⠈⠑', '|': '⠸⠳','{': '⠸⠣', '}': '⠸⠜'
 }
 
-const numberBraille = {
+const numberBrailleContractions = {
   '0': '⠴', '1': '⠂', '2': '⠆', '3': '⠒', '4': '⠲', '5': '⠢', '6': '⠖', '7': '⠶', '8': '⠦', '9': '⠔',
 };
 
-
 // Combined Braille code dictionaries
+const allBrailleContractions = Object.assign({}, wordSignBrailleContractions, shortFormBrailleContractions, initialLetterBrailleContractions, lowerCaseBrailleContractions, punctuationSpecialSymbolsBrailleContractions, numberBrailleContractions);
+const lettersContractionsBrailleContractions = Object.assign({}, wordSignBrailleContractions, shortFormBrailleContractions, initialLetterBrailleContractions, lowerCaseBrailleContractions);
 
-const allBraille = Object.assign({}, wordSignBraille, shortFormBraille, initialLetterBraille, lowerCaseBraille, punctuationSpecialSymbolsBraille, numberBraille);
-const lettersContractionsBraille = Object.assign({}, wordSignBraille, shortFormBraille, initialLetterBraille, lowerCaseBraille);
-
-
-// Function to convert text to Braille code
-function textToBraille(text) {
+// Function to convert text to Braille code with contractions
+function textToBrailleContractions(text) {
   const words = text.split(' ');
-  return words.map(word => convertWordToBraille(word)).join('⠀'); // I'm joining them together with a space character of Braille in between the words.
+  return words.map(word => convertWordToBrailleContractions(word)).join('⠀');
 }
 
-function convertWordToBraille(word) {
-  if (containsMixedCharacters(word)) {
-    return convertMixedCharacters(word);
+function convertWordToBrailleContractions(word) {
+  if (containsMixedCharactersContractions(word)) {
+    return convertMixedCharactersContractions(word);
   } else if (/[a-z]/.test(word[0])) {
-    return convertLowerCase(word);
+    return convertLowerCaseContractions(word);
   } else if (/[A-Z]/.test(word[0])) {
-    return convertUpperCase(word);
+    return convertUpperCaseContractions(word);
   } else if (/\d/.test(word[0])) {
-    return convertNumbers(word);
+    return convertNumbersContractions(word);
   } else {
-    return convertPunctuation(word);
+    return convertPunctuationContractions(word);
   }
 }
 
-function containsMixedCharacters(word) {
+function containsMixedCharactersContractions(word) {
   return (
     word.match(/[a-zA-Z].*[^a-zA-Z]/) ||
     word.match(/[^a-zA-Z].*[a-zA-Z]/) ||
@@ -88,39 +81,31 @@ function containsMixedCharacters(word) {
   );
 }
 
-function convertMixedCharacters(word) {
-  // Handle capital letter first (if present)
+function convertMixedCharactersContractions(word) {
   if (/[A-Z]/.test(word[0])) {
-    word = '⠠' + word.toLowerCase(); // In braille, capital letters have to be indicated by '⠠'
+    word = '⠠' + word.toLowerCase();
   }
   
-  // Insert numeric indicator before numbers
   let result = '';
   let inNumberMode = false;
   
-  // Process character by character
   for (let i = 0; i < word.length; i++) {
     let char = word[i];
     
-    // Check if current character is a number
     if (/\d/.test(char)) {
-      // Add numeric indicator if we're not already in number mode
       if (!inNumberMode) {
         result += '⠼';
         inNumberMode = true;
       }
     } else {
-      // Exit number mode when encountering non-digit
       inNumberMode = false;
     }
     
     result += char;
   }
   
-  // Now replace all characters with their Braille equivalents
-  for (const [key, value] of Object.entries(allBraille)) {
+  for (const [key, value] of Object.entries(allBrailleContractions)) {
     if (result.includes(key)) {
-      // Escape special regex characters before creating RegExp
       const escapedKey = key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
       result = result.replace(new RegExp(escapedKey, 'g'), value);
     }
@@ -129,8 +114,8 @@ function convertMixedCharacters(word) {
   return result;
 }
 
-function convertLowerCase(word) {
-  for (const [key, value] of Object.entries(lettersContractionsBraille)) {
+function convertLowerCaseContractions(word) {
+  for (const [key, value] of Object.entries(lettersContractionsBrailleContractions)) {
     if (word.includes(key)) {
       word = word.replace(new RegExp(key, 'g'), value);
     }
@@ -138,21 +123,22 @@ function convertLowerCase(word) {
   return word;
 }
 
-function convertUpperCase(word) {
+function convertUpperCaseContractions(word) {
   if (/[A-Z]/.test(word[1])) {
-    word = '⠠⠠' + word; // In braille, all caps letters have to be indicated by '⠠⠠'
+    word = '⠠⠠' + word;
   } else {
-    word = '⠠' + word; // In braille, capital letters have to be indicated by '⠠'
+    word = '⠠' + word;
   } 
   word = word.toLowerCase();
-  for (const [key, value] of Object.entries(lettersContractionsBraille)) {
+  for (const [key, value] of Object.entries(lettersContractionsBrailleContractions)) {
     word = word.replace(new RegExp(key, 'g'), value);
-  } return word;
+  }
+  return word;
 }
 
-function convertNumbers(word) {
-  word = '⠼' + word; // In braille, numbers have to be indicated by '⠠'
-  for (const [key, value] of Object.entries(numberBraille)) {
+function convertNumbersContractions(word) {
+  word = '⠼' + word;
+  for (const [key, value] of Object.entries(numberBrailleContractions)) {
     if (word.includes(key)) {
       word = word.replace(new RegExp(key, 'g'), value);
     }
@@ -160,10 +146,9 @@ function convertNumbers(word) {
   return word;
 }
 
-function convertPunctuation(word) {
-  for (const [key, value] of Object.entries(punctuationSpecialSymbolsBraille)) {
+function convertPunctuationContractions(word) {
+  for (const [key, value] of Object.entries(punctuationSpecialSymbolsBrailleContractions)) {
     if (word.includes(key)) {
-      // Escape special regex characters before creating RegExp
       const escapedKey = key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
       word = word.replace(new RegExp(escapedKey, 'g'), value);
     }
@@ -171,36 +156,11 @@ function convertPunctuation(word) {
   return word;
 }
 
-// Example usage
-const text = "LOREM Ipsum asphalt but every more, have conceiving beyond already, ever father know,";
-console.log(textToBraille(text));
-
 // Universal module definition
 if (typeof module !== 'undefined' && module.exports) {
-    // Node.js environment (for tests)
     module.exports = {
-        textToBraille
+        textToBrailleContractions
     };
 } else {
-    // Browser environment (for website)
-    // Functions are already globally available
-    // No action needed - they're declared with 'function' keyword
+    window.textToBrailleContractions = textToBrailleContractions;
 }
-
-/* 
-What do I want to do here? - I want to convert text to English Braille 2 and from Braille 2 to text using this alphabet as a referrence -
-https://hadleyhelps.org/sites/default/files/2021-03/Braille%20Quick%20Reference.pdf
-
-
-Outstanding issues with the script: 
-
-
-New issues with contractions now included:
-
-
-
-List of things left to do: 
-* Include strong, lower and final letter contractions (these may have special rules when they're used in the 
-beginning or end of the word, look into it). 
-
-*/
