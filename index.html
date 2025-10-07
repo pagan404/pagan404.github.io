@@ -8,12 +8,15 @@
 </head>
 <body>
     <header>
-        <div class="topnav">
+        <nav class="topnav">
             <h1 class="branding">Pagan's Blog</h1>
-            <a href="workshop.html">Workshop</a>
-            <a href="encodings.html">Encodings</a>
-            <a class="active" href="index.html">Home</a>
-        </div>
+            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
+            <div class="nav-links" id="nav-links">
+                <a href="index.html" class="active">Home</a>
+                <a href="encodings.html">Encodings</a>
+                <a href="workshop.html">Workshop</a>
+            </div>
+        </nav>
     </header>
     
     <h1 class="read-my-blog">I've written some blogs, feel free to check them out!</h1>
@@ -53,5 +56,29 @@
     <footer>
         <p>This website is made to store my programming projects and an occasional blog. If you'd like to contact me - please don't!</p>
     </footer>
+    
+    <script>
+        function toggleMobileMenu() {
+            const navLinks = document.getElementById('nav-links');
+            navLinks.classList.toggle('mobile-open');
+        }
+        
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const navLinks = document.getElementById('nav-links');
+            const toggle = document.querySelector('.mobile-menu-toggle');
+            
+            if (!toggle.contains(event.target) && !navLinks.contains(event.target)) {
+                navLinks.classList.remove('mobile-open');
+            }
+        });
+        
+        // Close mobile menu when window is resized to desktop
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 768) {
+                document.getElementById('nav-links').classList.remove('mobile-open');
+            }
+        });
+    </script>
 </body>
 </html>

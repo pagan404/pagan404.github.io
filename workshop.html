@@ -1,25 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CSS Workshop</title>
-    <link href="resources/css/style.css" rel="stylesheet">
-</head>
-<body class="workshop">
+    <link href="resources/css/style.css" rel="stylesheet" />
+  </head>
+  <body class="workshop">
     <header>
-        <div class="topnav">
-            <h1 class="branding">Pagan's Blog</h1>
-            <a class="active" href="workshop.html">Workshop</a>
-            <a href="encodings.html">Encodings</a>
-            <a href="index.html">Home</a>
+      <nav class="topnav">
+        <h1 class="branding">Pagan's Blog</h1>
+        <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+          ☰
+        </button>
+        <div class="nav-links" id="nav-links">
+          <a href="index.html">Home</a>
+          <a href="encodings.html">Encodings</a>
+          <a href="workshop.html" class="active">Workshop</a>
         </div>
+      </nav>
     </header>
 
     <div class="background-image"></div>
 
     <footer>
-        <p>This website is made to store my programming projects and an occasional blog. If you'd like to contact me - please don't!</p>
+      <p>
+        This website is made to store my programming projects and an occasional
+        blog. If you'd like to contact me - please don't!
+      </p>
     </footer>
-</body>
+
+    <script>
+      function toggleMobileMenu() {
+        const navLinks = document.getElementById("nav-links");
+        navLinks.classList.toggle("mobile-open");
+      }
+
+      // Close mobile menu when clicking outside
+      document.addEventListener("click", function (event) {
+        const navLinks = document.getElementById("nav-links");
+        const toggle = document.querySelector(".mobile-menu-toggle");
+
+        if (
+          !toggle.contains(event.target) &&
+          !navLinks.contains(event.target)
+        ) {
+          navLinks.classList.remove("mobile-open");
+        }
+      });
+
+      // Close mobile menu when window is resized to desktop
+      window.addEventListener("resize", function () {
+        if (window.innerWidth > 768) {
+          document.getElementById("nav-links").classList.remove("mobile-open");
+        }
+      });
+    </script>
+  </body>
 </html>
