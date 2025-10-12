@@ -58,6 +58,7 @@ class EncodingsInterface {
   init() {
     this.setupEventListeners();
     this.setupCustomDropdown();
+    this.setupConversionDropdown();
     this.updateInterface(); // Set initial interface
   }
 
@@ -66,17 +67,8 @@ class EncodingsInterface {
     // Encoding type selector - Remove this since we're using custom dropdown
     // The custom dropdown will directly call this.currentEncoding and this.updateInterface()
 
-    // Conversion type selector (for binary/hex/braille)
-    const conversionTypeSelector = document.getElementById(
-      "conversion-type-selector"
-    );
-    if (conversionTypeSelector) {
-      conversionTypeSelector.addEventListener("change", (e) => {
-        this.currentConversionType = e.target.value;
-        this.updateLabelsForConversionType();
-        this.clearFields();
-      });
-    }
+    // Conversion type selector - Now using custom dropdown
+    // The custom dropdown will directly call this.currentConversionType and this.updateLabelsForConversionType()
 
     // Input field listeners
     const textInput = document.getElementById("text-input");
@@ -138,7 +130,7 @@ class EncodingsInterface {
       "conversion-type-container"
     );
     const conversionTypeSelector = document.getElementById(
-      "conversion-type-selector"
+      "conversion-type-dropdown"
     );
 
     if (conversionTypeContainer && conversionTypeSelector) {
@@ -157,40 +149,68 @@ class EncodingsInterface {
 
   // Update conversion type selector options based on encoding
   updateConversionTypeOptions() {
-    const conversionTypeSelector = document.getElementById(
-      "conversion-type-selector"
+    const conversionDropdownSelected = document.getElementById(
+      "conversion-dropdown-selected"
     );
-    if (!conversionTypeSelector) return;
+    const conversionDropdownOptions = document.getElementById(
+      "conversion-dropdown-options"
+    );
+
+    if (!conversionDropdownSelected || !conversionDropdownOptions) return;
 
     // Clear existing options
-    conversionTypeSelector.innerHTML = "";
+    conversionDropdownOptions.innerHTML = "";
 
     if (this.currentEncoding === "braille") {
       // Braille-specific options
-      const braille1Option = new Option("Braille 1", "braille1", true);
-      const braille2Option = new Option("Braille 2", "braille2");
-      const braille2ContractionsOption = new Option(
-        "Braille 2 + Contractions",
+      const braille1Option = document.createElement("div");
+      braille1Option.className = "dropdown-option active";
+      braille1Option.setAttribute("data-value", "braille1");
+      braille1Option.textContent = "Braille 1";
+
+      const braille2Option = document.createElement("div");
+      braille2Option.className = "dropdown-option";
+      braille2Option.setAttribute("data-value", "braille2");
+      braille2Option.textContent = "Braille 2";
+
+      const braille2ContractionsOption = document.createElement("div");
+      braille2ContractionsOption.className = "dropdown-option";
+      braille2ContractionsOption.setAttribute(
+        "data-value",
         "braille2_contractions"
       );
+      braille2ContractionsOption.textContent = "Braille 2 + Contractions";
 
-      conversionTypeSelector.appendChild(braille1Option);
-      conversionTypeSelector.appendChild(braille2Option);
-      conversionTypeSelector.appendChild(braille2ContractionsOption);
+      conversionDropdownOptions.appendChild(braille1Option);
+      conversionDropdownOptions.appendChild(braille2Option);
+      conversionDropdownOptions.appendChild(braille2ContractionsOption);
 
       // Set default to braille1
       this.currentConversionType = "braille1";
+      conversionDropdownSelected.querySelector("span").textContent =
+        "Braille 1";
     } else {
       // Binary/Hex options
-      const numberOption = new Option("Numbers", "number", true);
-      const textOption = new Option("Text", "text");
+      const numberOption = document.createElement("div");
+      numberOption.className = "dropdown-option active";
+      numberOption.setAttribute("data-value", "number");
+      numberOption.textContent = "Numbers";
 
-      conversionTypeSelector.appendChild(numberOption);
-      conversionTypeSelector.appendChild(textOption);
+      const textOption = document.createElement("div");
+      textOption.className = "dropdown-option";
+      textOption.setAttribute("data-value", "text");
+      textOption.textContent = "Text";
+
+      conversionDropdownOptions.appendChild(numberOption);
+      conversionDropdownOptions.appendChild(textOption);
 
       // Set default to number
       this.currentConversionType = "number";
+      conversionDropdownSelected.querySelector("span").textContent = "Numbers";
     }
+
+    // Re-setup the conversion dropdown event listeners for new options
+    this.setupConversionDropdown();
   }
 
   // Update labels based on conversion type for binary/hex/braille
@@ -573,6 +593,80 @@ class EncodingsInterface {
 
     // Make dropdown focusable
     dropdownSelected.setAttribute("tabindex", "0");
+  }
+
+  // Setup conversion type dropdown functionality
+  setupConversionDropdown() {
+    const dropdown = document.getElementById("conversion-type-dropdown");
+    const dropdownSelected = document.getElementById(
+      "conversion-dropdown-selected"
+    );
+    const dropdownOptions = document.getElementById(
+      "conversion-dropdown-options"
+    );
+    const options = document.querySelectorAll(
+      "#conversion-dropdown-options .dropdown-option"
+    );
+
+    if (!dropdown || !dropdownSelected || !dropdownOptions) return;
+
+    // Remove existing event listeners by cloning and replacing the elements
+    const newDropdownSelected = dropdownSelected.cloneNode(true);
+    dropdownSelected.parentNode.replaceChild(
+      newDropdownSelected,
+      dropdownSelected
+    );
+
+    // Toggle dropdown
+    newDropdownSelected.addEventListener("click", () => {
+      dropdown.classList.toggle("open");
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener("click", (event) => {
+      if (!dropdown.contains(event.target)) {
+        dropdown.classList.remove("open");
+      }
+    });
+
+    // Handle option selection
+    const currentOptions = document.querySelectorAll(
+      "#conversion-dropdown-options .dropdown-option"
+    );
+    currentOptions.forEach((option) => {
+      option.addEventListener("click", () => {
+        const value = option.getAttribute("data-value");
+        const text = option.textContent.trim();
+
+        // Update selected display
+        newDropdownSelected.querySelector("span").textContent = text;
+
+        // Update active state
+        currentOptions.forEach((opt) => opt.classList.remove("active"));
+        option.classList.add("active");
+
+        // Close dropdown
+        dropdown.classList.remove("open");
+
+        // Update the conversion type
+        this.currentConversionType = value;
+        this.updateLabelsForConversionType();
+        this.clearFields();
+      });
+    });
+
+    // Keyboard support
+    newDropdownSelected.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        dropdown.classList.toggle("open");
+      } else if (event.key === "Escape") {
+        dropdown.classList.remove("open");
+      }
+    });
+
+    // Make dropdown focusable
+    newDropdownSelected.setAttribute("tabindex", "0");
   }
 }
 

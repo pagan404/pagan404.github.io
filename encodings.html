@@ -70,16 +70,26 @@
             class="conversion-type-container"
             style="display: none"
           >
-            <label for="conversion-type-selector" class="conversion-type-label"
+            <label for="conversion-type-dropdown" class="conversion-type-label"
               >Conversion Type:</label
             >
-            <select
-              id="conversion-type-selector"
-              class="conversion-type-selector"
+            <div
+              class="custom-dropdown conversion-dropdown"
+              id="conversion-type-dropdown"
             >
-              <option value="number" selected>Numbers</option>
-              <option value="text">Text</option>
-            </select>
+              <div class="dropdown-selected" id="conversion-dropdown-selected">
+                <span>Numbers</span>
+                <svg class="dropdown-arrow" viewBox="0 0 24 24">
+                  <polyline points="6,9 12,15 18,9"></polyline>
+                </svg>
+              </div>
+              <div class="dropdown-options" id="conversion-dropdown-options">
+                <div class="dropdown-option active" data-value="number">
+                  Numbers
+                </div>
+                <div class="dropdown-option" data-value="text">Text</div>
+              </div>
+            </div>
           </div>
 
           <div class="converter-help">
