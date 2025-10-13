@@ -97,6 +97,8 @@ body {
 .article-links {
   text-decoration: none;
   color: black;
+  display: block;
+  transition: all 0.3s ease;
 }
 
 .article-intro {
@@ -106,6 +108,14 @@ body {
   padding: 50px 10px 100px 10px;
   border-top: 2px solid rgba(0, 0, 0, 0.3);
   font-size: larger;
+  transition: all 0.3s ease;
+  border-radius: 8px;
+}
+
+.article-links:hover {
+  background-color: rgba(126, 148, 43, 0.15);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .article-content {
@@ -632,6 +642,15 @@ footer {
   .article-intro {
     width: 100%;
     padding: 30px;
+    transition: all 0.3s ease; /* Preserve hover transition on mobile */
+    border-radius: 8px; /* Preserve border-radius on mobile */
+  }
+
+  /* Preserve hover effects on mobile */
+  .article-links:hover {
+    background-color: rgba(126, 148, 43, 0.15);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
 }
 
@@ -654,6 +673,15 @@ footer {
 
   .article-intro {
     padding: 20px;
+    transition: all 0.3s ease; /* Preserve hover transition on smaller screens */
+    border-radius: 8px; /* Preserve border-radius on smaller screens */
+  }
+
+  /* Preserve hover effects on smaller screens */
+  .article-links:hover {
+    background-color: rgba(126, 148, 43, 0.15);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
 }
 
