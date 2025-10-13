@@ -51,9 +51,8 @@ body {
   transition: all 0.3s ease;
   border-radius: 4px;
   white-space: nowrap;
-  flex: 1; /* Make all links equal width */
-  text-align: center; /* Center the text within each link */
-  min-width: 120px; /* Ensure minimum width for consistent sizing */
+  text-align: center;
+  min-width: fit-content; /* Allow links to size to their content */
 }
 
 .topnav a:hover {
@@ -89,17 +88,6 @@ body {
   text-align: center;
   margin-top: 50px;
   margin-bottom: 50px;
-}
-
-.background-image {
-  width: 800px;
-  height: 650px;
-  background-image: url("../images/work-in-progress.png");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  margin: auto;
-  margin-bottom: 100px;
 }
 
 /* ========================================
@@ -169,6 +157,29 @@ footer {
   color: white;
   background-color: #333;
   font-size: 17px;
+}
+
+/* ========================================
+   WORKSHOP PAGE STYLES
+   ======================================== */
+
+.workshop {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.workshop main {
+  flex: 1;
+  padding: 4rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+}
+
+.workshop footer {
+  margin-top: auto;
 }
 
 /* ========================================
@@ -609,6 +620,9 @@ footer {
     text-align: center;
     border-radius: 0;
     border-bottom: 1px solid #444;
+    width: 100% !important; /* Force equal width on mobile */
+    min-width: auto !important; /* Override desktop min-width */
+    flex: none; /* Remove flex since we're using width */
   }
 
   .topnav a:last-child {
@@ -633,6 +647,9 @@ footer {
   .topnav a {
     font-size: 1rem;
     padding: 0.875rem;
+    width: 100% !important; /* Force equal width on smaller screens */
+    min-width: auto !important;
+    flex: none;
   }
 
   .article-intro {
