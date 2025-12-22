@@ -114,36 +114,4 @@ window.UIUtils = class UIUtils {
         });
     }
   }
-
-
-  // Clear all fields
-  static clearFields() {
-    const textInput = document.getElementById("text-input");
-    const encodedOutput = document.getElementById("encoded-output");
-
-    if (textInput) textInput.value = "";
-    if (encodedOutput) encodedOutput.value = "";
-  }
-
-  // Copy result to clipboard
-  static copyResult() {
-    const encodedOutput = document.getElementById("encoded-output");
-    if (encodedOutput && encodedOutput.value) {
-      navigator.clipboard
-        .writeText(encodedOutput.value)
-        .then(() => {
-          const copyBtn = document.getElementById("copy-result");
-          if (copyBtn) {
-            const originalText = copyBtn.textContent;
-            copyBtn.textContent = "Copied!";
-            setTimeout(() => {
-              copyBtn.textContent = originalText;
-            }, 2000);
-          }
-        })
-        .catch((err) => {
-          console.error("Failed to copy: ", err);
-        });
-    }
-  }
 };
