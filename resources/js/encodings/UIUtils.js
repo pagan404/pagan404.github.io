@@ -17,19 +17,18 @@ window.UIUtils = class UIUtils {
     const encoding = encodingsInterface.currentEncoding;
 
     if (encoding === "braille") {
-      this.updateElement("input-label", "Text Input");
-      this.updateElement("encode-btn-text", "Text → Braille");
+      this.updateElement("input-label", config.labels.input);
+      this.updateElement("encode-btn-text", config.labels.encodeBtn);
 
       if (conversionType === "braille2_contractions") {
-        this.updateElement("decode-btn-text", "One-way only");
+        this.updateElement("decode-btn-text", config.labels.decodeBtn.contractions);
         const encodedOutput = document.getElementById("encoded-output");
         if (encodedOutput) {
           encodedOutput.disabled = true;
-          encodedOutput.placeholder =
-            "Braille with contractions (one-way conversion only)";
+          encodedOutput.placeholder = config.placeholders.output.contractions;
         }
       } else {
-        this.updateElement("decode-btn-text", "Braille → Text");
+        this.updateElement("decode-btn-text", config.labels.decodeBtn.default);
         const encodedOutput = document.getElementById("encoded-output");
         if (encodedOutput) {
           encodedOutput.disabled = false;
@@ -37,33 +36,12 @@ window.UIUtils = class UIUtils {
       }
     } else {
       const isNumber = conversionType === "number";
+      const typeKey = isNumber ? "number" : "text";
 
-      if (encoding === "binary") {
-        this.updateElement(
-          "input-label",
-          isNumber ? "Decimal Number" : "Text Input"
-        );
-        this.updateElement(
-          "encode-btn-text",
-          isNumber ? "Decimal → Binary" : "Text → Binary"
-        );
-        this.updateElement(
-          "decode-btn-text",
-          isNumber ? "Binary → Decimal" : "Binary → Text"
-        );
-      } else if (encoding === "hex") {
-        this.updateElement(
-          "input-label",
-          isNumber ? "Decimal Number" : "Text Input"
-        );
-        this.updateElement(
-          "encode-btn-text",
-          isNumber ? "Decimal → Hex" : "Text → Hex"
-        );
-        this.updateElement(
-          "decode-btn-text",
-          isNumber ? "Hex → Decimal" : "Hex → Text"
-        );
+      if (encoding === "binary" || encoding === "hex") {
+        this.updateElement("input-label", config.labels[typeKey].input);
+        this.updateElement("encode-btn-text", config.labels[typeKey].encodeBtn);
+        this.updateElement("decode-btn-text", config.labels[typeKey].decodeBtn);
       }
 
       const encodedOutput = document.getElementById("encoded-output");
@@ -84,41 +62,59 @@ window.UIUtils = class UIUtils {
 
     const encoding = encodingsInterface.currentEncoding;
     const conversionType = encodingsInterface.currentConversionType;
+    const config = window.ENCODING_CONFIGS[encoding];
 
-    switch (encoding) {
-      case "morse":
-        textInput.placeholder = "Enter your text here...";
-        encodedOutput.placeholder = "Morse code will appear here...";
-        break;
-      case "binary":
-        if (conversionType === "number") {
-          textInput.placeholder = "Enter decimal number (e.g., 42)...";
-          encodedOutput.placeholder = "Binary will appear here...";
-        } else {
-          textInput.placeholder = "Enter text to convert...";
-          encodedOutput.placeholder = "Binary will appear here...";
-        }
-        break;
-      case "hex":
-        if (conversionType === "number") {
-          textInput.placeholder = "Enter decimal number (e.g., 255)...";
-          encodedOutput.placeholder = "Hexadecimal will appear here...";
-        } else {
-          textInput.placeholder = "Enter text to convert...";
-          encodedOutput.placeholder = "Hexadecimal will appear here...";
-        }
-        break;
-      case "braille":
-        textInput.placeholder = "Enter text to convert to Braille...";
-        if (conversionType === "braille2_contractions") {
-          encodedOutput.placeholder =
-            "Braille with contractions (one-way conversion only)";
-        } else {
-          encodedOutput.placeholder = "Braille patterns will appear here...";
-        }
-        break;
+    if (!config) return;
+
+    if (encoding === "morse") {
+      textInput.placeholder = config.placeholders.input;
+      encodedOutput.placeholder = config.placeholders.output;
+    } else if (encoding === "binary" || encoding === "hex") {
+      const typeKey = conversionType === "number" ? "number" : "text";
+      textInput.placeholder = config.placeholders[typeKey].input;
+      encodedOutput.placeholder = config.placeholders[typeKey].output;
+    } else if (encoding === "braille") {
+      textInput.placeholder = config.placeholders.input;
+      if (conversionType === "braille2_contractions") {
+        encodedOutput.placeholder = config.placeholders.output.contractions;
+      } else {
+        encodedOutput.placeholder = config.placeholders.output.default;
+      }
     }
   }
+
+  // Clear all fields
+  static clearFields() {
+    const textInput = document.getElementById("text-input");
+    const encodedOutput = document.getElementById("encoded-output");
+
+    if (textInput) textInput.value = "";
+    if (encodedOutput) encodedOutput.value = "";
+  }
+
+  // Copy result to clipboard
+  static copyResult() {
+    const encodedOutput = document.getElementById("encoded-output");
+    if (encodedOutput && encodedOutput.value) {
+      const uiConfig = window.ENCODING_CONFIGS.ui;
+      navigator.clipboard
+        .writeText(encodedOutput.value)
+        .then(() => {
+          const copyBtn = document.getElementById("copy-result");
+          if (copyBtn) {
+            const originalText = copyBtn.textContent;
+            copyBtn.textContent = uiConfig.copyButton.copied;
+            setTimeout(() => {
+              copyBtn.textContent = originalText;
+            }, uiConfig.copyButton.copiedTimeout);
+          }
+        })
+        .catch((err) => {
+          console.error("Failed to copy: ", err);
+        });
+    }
+  }
+
 
   // Clear all fields
   static clearFields() {

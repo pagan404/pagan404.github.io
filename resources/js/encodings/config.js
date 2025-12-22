@@ -4,48 +4,99 @@ window.ENCODING_CONFIGS = {
     title: "Morse Code Converter",
     description:
       "Convert text to Morse code and back. Type in either field for real-time conversion.",
-    inputLabel: "Text Input",
-    outputLabel: "Morse Code Output",
-    encodeBtn: "Text → Morse",
-    decodeBtn: "Morse → Text",
-    helpText:
-      "Enter text in the left box to see Morse code, or enter Morse code in the right box to see text. Use dots (.) and dashes (-) separated by spaces for Morse code input.",
     showConversionType: false,
+    labels: {
+      input: "Text Input",
+      encodeBtn: "Text → Morse",
+      decodeBtn: "Morse → Text",
+    },
+    placeholders: {
+      input: "Enter your text here...",
+      output: "Morse code will appear here...",
+    },
   },
   binary: {
     title: "Binary Converter",
     description:
       "Convert numbers or text to binary and back. Choose your conversion type above.",
-    inputLabel: "Input",
-    outputLabel: "Binary Output",
-    encodeBtn: "Convert → Binary",
-    decodeBtn: "Binary → Convert",
-    helpText:
-      "Choose between Numbers or Text mode above. For numbers: enter decimal values. For text: enter any text to convert to binary.",
     showConversionType: true,
+    labels: {
+      text: {
+        input: "Text Input",
+        encodeBtn: "Text → Binary",
+        decodeBtn: "Binary → Text",
+      },
+      number: {
+        input: "Decimal Number",
+        encodeBtn: "Decimal → Binary",
+        decodeBtn: "Binary → Decimal",
+      },
+    },
+    placeholders: {
+      text: {
+        input: "Enter text to convert...",
+        output: "Binary will appear here...",
+      },
+      number: {
+        input: "Enter decimal number (e.g., 42)...",
+        output: "Binary will appear here...",
+      },
+    },
   },
   braille: {
     title: "Braille Converter",
     description:
       "Convert text to Braille patterns. Choose your Braille format above.",
-    inputLabel: "Text Input",
-    outputLabel: "Braille Output",
-    encodeBtn: "Text → Braille",
-    decodeBtn: "Braille → Text",
-    helpText:
-      "Choose between Braille 1, Braille 2, or Braille 2 with Contractions above. Enter text to convert to Braille patterns.",
     showConversionType: true,
+    labels: {
+      input: "Text Input",
+      encodeBtn: "Text → Braille",
+      decodeBtn: {
+        default: "Braille → Text",
+        contractions: "One-way only",
+      },
+    },
+    placeholders: {
+      input: "Enter text to convert to Braille...",
+      output: {
+        default: "Braille patterns will appear here...",
+        contractions: "Braille with contractions (one-way conversion only)",
+      },
+    },
   },
   hex: {
     title: "Hexadecimal Converter",
     description:
       "Convert numbers or text to hexadecimal and back. Choose your conversion type above.",
-    inputLabel: "Input",
-    outputLabel: "Hexadecimal Output",
-    encodeBtn: "Convert → Hex",
-    decodeBtn: "Hex → Convert",
-    helpText:
-      "Choose between Numbers or Text mode above. For numbers: enter decimal values. For text: enter any text to convert to hexadecimal.",
     showConversionType: true,
+    labels: {
+      text: {
+        input: "Text Input",
+        encodeBtn: "Text → Hex",
+        decodeBtn: "Hex → Text",
+      },
+      number: {
+        input: "Decimal Number",
+        encodeBtn: "Decimal → Hex",
+        decodeBtn: "Hex → Decimal",
+      },
+    },
+    placeholders: {
+      text: {
+        input: "Enter text to convert...",
+        output: "Hexadecimal will appear here...",
+      },
+      number: {
+        input: "Enter decimal number (e.g., 255)...",
+        output: "Hexadecimal will appear here...",
+      },
+    },
+  },
+  ui: {
+    copyButton: {
+      default: "Copy",
+      copied: "Copied!",
+      copiedTimeout: 2000,
+    },
   },
 };
