@@ -1,5 +1,7 @@
+import { ENCODING_CONFIGS } from "./config.js";
+
 // UI utility functions
-window.UIUtils = class UIUtils {
+export class UIUtils {
   // Update element content
   static updateElement(id, content) {
     const element = document.getElementById(id);
@@ -10,7 +12,7 @@ window.UIUtils = class UIUtils {
 
   // Update labels based on conversion type
   static updateLabelsForConversionType(encodingsInterface) {
-    const config = window.ENCODING_CONFIGS[encodingsInterface.currentEncoding];
+    const config = ENCODING_CONFIGS[encodingsInterface.currentEncoding];
     if (!config || !config.showConversionType) return;
 
     const conversionType = encodingsInterface.currentConversionType;
@@ -21,7 +23,10 @@ window.UIUtils = class UIUtils {
       this.updateElement("encode-btn-text", config.labels.encodeBtn);
 
       if (conversionType === "braille2_contractions") {
-        this.updateElement("decode-btn-text", config.labels.decodeBtn.contractions);
+        this.updateElement(
+          "decode-btn-text",
+          config.labels.decodeBtn.contractions
+        );
         const encodedOutput = document.getElementById("encoded-output");
         if (encodedOutput) {
           encodedOutput.disabled = true;
@@ -62,7 +67,7 @@ window.UIUtils = class UIUtils {
 
     const encoding = encodingsInterface.currentEncoding;
     const conversionType = encodingsInterface.currentConversionType;
-    const config = window.ENCODING_CONFIGS[encoding];
+    const config = ENCODING_CONFIGS[encoding];
 
     if (!config) return;
 
@@ -96,7 +101,7 @@ window.UIUtils = class UIUtils {
   static copyResult() {
     const encodedOutput = document.getElementById("encoded-output");
     if (encodedOutput && encodedOutput.value) {
-      const uiConfig = window.ENCODING_CONFIGS.ui;
+      const uiConfig = ENCODING_CONFIGS.ui;
       navigator.clipboard
         .writeText(encodedOutput.value)
         .then(() => {
@@ -114,4 +119,4 @@ window.UIUtils = class UIUtils {
         });
     }
   }
-};
+}

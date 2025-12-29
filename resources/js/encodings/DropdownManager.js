@@ -1,5 +1,5 @@
 // Manages custom dropdown functionality
-window.DropdownManager = class DropdownManager {
+export class DropdownManager {
   // Setup main encoding dropdown
   static setupEncodingDropdown(encodingsInterface) {
     const dropdown = document.getElementById("encoding-dropdown");
@@ -194,4 +194,4 @@ window.DropdownManager = class DropdownManager {
     // Re-setup event listeners for new options
     this.setupConversionDropdown(encodingsInterface);
   }
-};
+}

@@ -1,5 +1,10 @@
+import { ENCODING_CONFIGS } from "./config.js";
+import { ConversionHandler } from "./ConversionHandler.js";
+import { DropdownManager } from "./DropdownManager.js";
+import { UIUtils } from "./UIUtils.js";
+
 // Main encodings interface controller
-class EncodingsInterface {
+export class EncodingsInterface {
   constructor() {
     this.currentEncoding = "morse";
     this.currentConversionType = "number";
@@ -8,8 +13,8 @@ class EncodingsInterface {
   // Initialize the converter
   init() {
     this.setupEventListeners();
-    window.DropdownManager.setupEncodingDropdown(this);
-    window.DropdownManager.setupConversionDropdown(this);
+    DropdownManager.setupEncodingDropdown(this);
+    DropdownManager.setupConversionDropdown(this);
     this.updateInterface();
   }
 
@@ -20,13 +25,13 @@ class EncodingsInterface {
 
     if (textInput) {
       textInput.addEventListener("input", () =>
-        window.ConversionHandler.handleTextInput(this)
+        ConversionHandler.handleTextInput(this)
       );
     }
 
     if (encodedOutput) {
       encodedOutput.addEventListener("input", () =>
-        window.ConversionHandler.handleEncodedInput(this)
+        ConversionHandler.handleEncodedInput(this)
       );
     }
 
@@ -38,7 +43,7 @@ class EncodingsInterface {
 
     if (textToEncodedBtn) {
       textToEncodedBtn.addEventListener("click", () =>
-        window.ConversionHandler.handleTextInput(this)
+        ConversionHandler.handleTextInput(this)
       );
     }
 
@@ -49,27 +54,22 @@ class EncodingsInterface {
     }
 
     if (clearBtn) {
-      clearBtn.addEventListener("click", () => window.UIUtils.clearFields());
+      clearBtn.addEventListener("click", () => UIUtils.clearFields());
     }
 
     if (copyBtn) {
-      copyBtn.addEventListener("click", () => window.UIUtils.copyResult());
+      copyBtn.addEventListener("click", () => UIUtils.copyResult());
     }
   }
 
   // Update the interface based on selected encoding
   updateInterface() {
-    const config = window.ENCODING_CONFIGS[this.currentEncoding];
+    const config = ENCODING_CONFIGS[this.currentEncoding];
     if (!config) return;
 
     // Update title and description
-    window.UIUtils.updateElement("converter-title", config.title);
-    window.UIUtils.updateElement("converter-description", config.description);
-    window.UIUtils.updateElement("help-text", config.helpText);
-    window.UIUtils.updateElement("input-label", config.inputLabel);
-    window.UIUtils.updateElement("output-label", config.outputLabel);
-    window.UIUtils.updateElement("encode-btn-text", config.encodeBtn);
-    window.UIUtils.updateElement("decode-btn-text", config.decodeBtn);
+    UIUtils.updateElement("converter-title", config.title);
+    UIUtils.updateElement("converter-description", config.description);
 
     // Show/hide conversion type selector
     const conversionTypeContainer = document.getElementById(
@@ -82,23 +82,24 @@ class EncodingsInterface {
     if (conversionTypeContainer && conversionTypeSelector) {
       if (config.showConversionType) {
         conversionTypeContainer.style.display = "block";
-        window.DropdownManager.updateConversionTypeOptions(this);
+        DropdownManager.updateConversionTypeOptions(this);
         this.updateLabelsForConversionType();
       } else {
         conversionTypeContainer.style.display = "none";
       }
     }
 
-    window.UIUtils.updatePlaceholders(this);
+    UIUtils.updatePlaceholders(this);
   }
 
-  // Proxy methods to UIUtils
+  // Update labels for conversion type
   updateLabelsForConversionType() {
-    window.UIUtils.updateLabelsForConversionType(this);
+    UIUtils.updateLabelsForConversionType(this);
   }
 
+  // Clear all fields
   clearFields() {
-    window.UIUtils.clearFields();
+    UIUtils.clearFields();
   }
 
   // Convert encoded format to text with validation
@@ -112,16 +113,6 @@ class EncodingsInterface {
       );
       return;
     }
-    window.ConversionHandler.handleEncodedInput(this);
+    ConversionHandler.handleEncodedInput(this);
   }
 }
-
-// Make the class globally available
-window.EncodingsInterface = EncodingsInterface;
-
-// Initialize when DOM is loaded
-document.addEventListener("DOMContentLoaded", function () {
-  const encodingsInterface = new EncodingsInterface();
-  encodingsInterface.init();
-  window.encodingsInterface = encodingsInterface;
-});

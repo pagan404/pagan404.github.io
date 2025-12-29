@@ -1,5 +1,5 @@
 // Configuration for all encoding types
-window.ENCODING_CONFIGS = {
+export const ENCODING_CONFIGS = {
   morse: {
     title: "Morse Code Converter",
     description:

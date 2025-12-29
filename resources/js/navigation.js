@@ -1,5 +1,5 @@
 // Navigation functionality shared across all pages
-function toggleMobileMenu() {
+export function toggleMobileMenu() {
     const navLinks = document.getElementById('nav-links');
     navLinks.classList.toggle('mobile-open');
 }
@@ -15,8 +15,8 @@ document.addEventListener('click', function(event) {
 });
 
 // Close mobile menu when window is resized to desktop
-window.addEventListener('resize', function() {
-    if (window.innerWidth > 768) {
+addEventListener('resize', function() {
+    if (innerWidth > 768) {
         document.getElementById('nav-links').classList.remove('mobile-open');
     }
 });
