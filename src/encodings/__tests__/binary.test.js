@@ -1,7 +1,4 @@
-const decimalToBinary = require('../binary').decimalToBinary;
-const binaryToDecimal = require('../binary').binaryToDecimal;
-const textToBinary = require('../binary').textToBinary;
-const binaryToText = require('../binary').binaryToText;
+import { decimalToBinary, textToBinary, binaryToDecimal, binaryToText } from '../binary.js';
 
 describe('decimalToBinary', () => {
   it('should convert decimal to binary', () => {

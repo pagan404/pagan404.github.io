@@ -12,7 +12,7 @@ function isNumericString(str) {
 
 // function to convert decimal to hex
 
-function decimalToHex(decimal) {
+export function decimalToHex(decimal) {
     if (!isNumericString(decimal) || decimal < 0 || !Number.isInteger(Number(decimal))) {
         return "Please enter a valid, whole, non-negative number!";
     }
@@ -22,7 +22,7 @@ function decimalToHex(decimal) {
 
 // function to convert text to hex
 
-function textToHex(text) {
+export function textToHex(text) {
     if (typeof text !== 'string') {
         return 'Input must be a string';
     }
@@ -34,7 +34,7 @@ function textToHex(text) {
 
 // function to convert hex to decimal
 
-function hexToDecimal (hex) {
+export function hexToDecimal (hex) {
     if (!isHexString(hex)) {
         return "Please enter a valid hex string";
     }
@@ -43,7 +43,7 @@ function hexToDecimal (hex) {
 }
 
 // function to convert hex to text
-function hexToText(hex) {
+export function hexToText(hex) {
     if (!isHexString(hex)) {
         return "Please enter a valid hex string";
     }
@@ -51,19 +51,4 @@ function hexToText(hex) {
         String.fromCharCode(parseInt(hex, 16))
     ).join('');
     return decodedText;
-}
-
-// Universal module definition
-if (typeof module !== 'undefined' && module.exports) {
-    // Node.js environment (for tests)
-    module.exports = {
-        decimalToHex,
-        textToHex,
-        hexToDecimal,
-        hexToText
-    };
-} else {
-    // Browser environment (for website)
-    // Functions are already globally available
-    // No action needed - they're declared with 'function' keyword
 }

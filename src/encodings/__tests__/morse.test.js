@@ -1,5 +1,4 @@
-const textToMorse = require('../morse').textToMorse;
-const morseToText = require('../morse').morseToText;
+import { textToMorse, morseToText } from '../morse.js';
 
 describe('textToMorse', () => {
   it('should convert text to Morse code', () => {

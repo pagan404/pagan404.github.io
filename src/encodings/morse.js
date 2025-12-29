@@ -16,12 +16,12 @@ const morseText = Object.entries(textMorse).reduce((acc, [key, value]) => {
 }, {});
 
 // Function to convert text to Morse code
-function textToMorse(text) {
+export function textToMorse(text) {
   return text.toLowerCase().split('').map(char => textMorse[char] || '').join(' ');
 }
 
 // Function to convert Morse code to text
-function morseToText(morse) {
+export function morseToText(morse) {
   return morse
     .trim()
     .split('  ')
@@ -36,16 +36,3 @@ function morseToText(morse) {
 
 
 // In case you're wondering, morse code does not support capital letters, so the conversion is case-insensitive.
-
-// Universal module definition
-if (typeof module !== 'undefined' && module.exports) {
-    // Node.js environment (for tests)
-    module.exports = {
-        textToMorse,
-        morseToText
-    };
-} else {
-    // Browser environment (for website)
-    // Functions are already globally available
-    // No action needed - they're declared with 'function' keyword
-}

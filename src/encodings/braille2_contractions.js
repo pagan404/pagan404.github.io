@@ -53,7 +53,7 @@ const allBrailleContractions = Object.assign({}, wordSignBrailleContractions, sh
 const lettersContractionsBrailleContractions = Object.assign({}, wordSignBrailleContractions, shortFormBrailleContractions, initialLetterBrailleContractions, lowerCaseBrailleContractions);
 
 // Function to convert text to Braille code with contractions
-function textToBrailleContractions(text) {
+ export function textToBrailleContractions(text) {
   const words = text.split(' ');
   return words.map(word => convertWordToBrailleContractions(word)).join('⠀');
 }
@@ -154,13 +154,4 @@ function convertPunctuationContractions(word) {
     }
   }
   return word;
-}
-
-// Universal module definition
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = {
-        textToBrailleContractions
-    };
-} else {
-    window.textToBrailleContractions = textToBrailleContractions;
 }

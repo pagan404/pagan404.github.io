@@ -2,7 +2,7 @@
 
 // Function to convert from decimal to binary
 
-function decimalToBinary(number) {
+export function decimalToBinary(number) {
     if (!Number.isInteger(number) || number < 0) {
         return "Please enter a valid, whole, non-negative number!";
     }
@@ -16,7 +16,7 @@ function decimalToBinary(number) {
 
 
 // Function to convert from text to binary
-function textToBinary(text) {
+export function textToBinary(text) {
     if (typeof text !== 'string') {
         return "Input must be a string";
     }
@@ -34,7 +34,7 @@ function isBinaryString(str) {
 }
 
 // Function to convert from binary to decimal
-function binaryToDecimal(binary) {
+export function binaryToDecimal(binary) {
     binary = binary.trim().split(' ').join(''); // Remove spaces
     if (!isBinaryString(binary)) {
         return "Please enter a valid binary string";
@@ -44,7 +44,7 @@ function binaryToDecimal(binary) {
 
 // Function to convert from binary to text
 
-function binaryToText(binary) {
+export function binaryToText(binary) {
     if (!isBinaryString(binary.trim().split(' ').join(''))) {
         return "Please enter a valid binary string";
     }
@@ -57,19 +57,4 @@ function binaryToText(binary) {
         }
     }
     return text;
-}
-
-// Universal module definition
-if (typeof module !== 'undefined' && module.exports) {
-    // Node.js environment (for tests)
-    module.exports = {
-        decimalToBinary,
-        textToBinary,
-        binaryToDecimal,
-        binaryToText
-    };
-} else {
-    // Browser environment (for website)
-    // Functions are already globally available
-    // No action needed - they're declared with 'function' keyword
 }

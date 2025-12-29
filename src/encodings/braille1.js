@@ -16,24 +16,12 @@ const braille1Text = Object.entries(textBraille1).reduce((acc, [key, value]) => 
 }, {});
   
 // Function to convert text to Braille code
-function textToBraille1(text) {
+export function textToBraille(text) {
   return text.toLowerCase().split('').map(char => textBraille1[char] || '').join('');
 }
   
 // Function to convert Braille code to text
-function braille1ToText(braille) {
+export function brailleToText(braille) {
   return braille.split('').map(code => braille1Text[code] || '').join('');
 }
 
-// Universal module definition
-if (typeof module !== 'undefined' && module.exports) {
-    // Node.js environment (for tests)
-    module.exports = {
-        textToBraille1,
-        braille1ToText
-    };
-} else {
-    // Browser environment (for website)
-    window.textToBraille1 = textToBraille1;
-    window.braille1ToText = braille1ToText;
-}

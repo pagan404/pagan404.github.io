@@ -1,5 +1,4 @@
-const decimalToHex = require('../hexidecimal').decimalToHex;
-const hexToDecimal = require('../hexidecimal').hexToDecimal;
+import { decimalToHex, hexToDecimal } from '../hexidecimal.js';
 
 describe('decimalToHex', () => {
   it('should convert decimal to hex', () => {

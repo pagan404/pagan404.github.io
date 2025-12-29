@@ -1,5 +1,5 @@
-const textToBraille = require('../braille2').textToBraille2;
-const brailleToText = require('../braille2').braille2ToText;
+import { textToBraille, brailleToText } from "../braille2.js";   
+
 
 describe('Braille Translation', () => {
   it('should convert text to Braille', () => {

@@ -42,7 +42,7 @@ const allBraille = Object.assign({}, lettersBraille, punctuationSpecialSymbolsBr
 const brailleAll = Object.assign({}, brailleLetters, braillePunctuationSpecialSymbols);
 
 // Function to convert text to Braille code
-function textToBraille2(text) {
+export function textToBraille(text) {
   const words = text.split(' ');
   return words.map(word => convertWordToBraille(word)).join('⠀'); // I'm joining them together with a space character of Braille in between the words.
 }
@@ -154,7 +154,7 @@ function convertPunctuation(word) {
 }
 
 // Function to convert Braille code to text
-function braille2ToText(braille) {
+export function brailleToText(braille) {
   const words = braille.split('⠀');
   return words.map(word => {
     if (word[0] === '⠼') {
@@ -291,11 +291,6 @@ function convertBrailleGeneral(word) {
   }
   
   return word;
-}
-
-module.exports = {
-  textToBraille2,
-  braille2ToText
 }
 
 /* 

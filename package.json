@@ -3,16 +3,21 @@
   "version": "1.0.0",
   "description": "A blog website with Handlebars templating",
   "main": "build.js",
+  "type": "module",
   "scripts": {
     "build": "node build.js",
     "serve": "http-server . -p 8080",
     "dev": "npm run build && npm run serve",
     "add-article": "node add-article.js",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage"
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
+    "test:watch": "NODE_OPTIONS=--experimental-vm-modules jest --watch",
+    "test:coverage": "NODE_OPTIONS=--experimental-vm-modules jest --coverage"
   },
   "jest": {
+    "globals": {
+      "__USE_ESM__": true
+    },
+    "transform": {},
     "testEnvironment": "node",
     "testMatch": [
       "**/__tests__/**/*.test.js"
