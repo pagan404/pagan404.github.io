@@ -16,7 +16,7 @@ export function decimalToHex(decimal) {
     if (!isNumericString(decimal) || decimal < 0 || !Number.isInteger(Number(decimal))) {
         return "Please enter a valid, whole, non-negative number!";
     }
-    let hex = decimal.toString(16).toUpperCase();
+    let hex = Number(decimal).toString(16).toUpperCase();
     return hex;
 }
 
