@@ -41,6 +41,16 @@ export class DropdownManager {
 
         // Update the encodings interface
         encodingsInterface.currentEncoding = value;
+
+        // Reset conversion type to appropriate default for the encoding
+        if (value === "morse") {
+          encodingsInterface.currentConversionType = "text";
+        } else if (value === "binary" || value === "hex") {
+          encodingsInterface.currentConversionType = "number"; // or "text", your choice
+        } else if (value === "braille") {
+          encodingsInterface.currentConversionType = "braille1";
+        }
+
         encodingsInterface.updateInterface();
         encodingsInterface.clearFields();
       });
