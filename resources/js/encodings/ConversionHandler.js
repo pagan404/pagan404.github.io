@@ -28,14 +28,6 @@ export class ConversionHandler {
         throw new Error("Input too large (max 500 characters)");
       }
 
-      // Special handling for number conversions
-      if (conversionType === "number") {
-        const num = parseInt(inputText);
-        if (isNaN(num)) {
-          throw new Error("Invalid number input");
-        }
-      }
-
       const encoder = getEncoder(encoding, conversionType);
       const result = encoder(inputText);
 
