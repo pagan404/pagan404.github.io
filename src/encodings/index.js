@@ -3,7 +3,7 @@ import { textToMorse, morseToText } from './morse.js';
 import { textToBinary, binaryToText, decimalToBinary, binaryToDecimal } from './binary.js';
 import { textToHex, hexToText, decimalToHex, hexToDecimal } from './hexidecimal.js';
 import { textToBraille, brailleToText } from './braille1.js';
-import { textToBraill2, braille2ToText } from './braille2.js';
+import { textToBraille2, braille2ToText } from './braille2.js';
 import { textToBrailleContractions } from './braille2_contractions.js';
 
 // Registry object mapping encodings to their converters
