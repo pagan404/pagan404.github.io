@@ -7,7 +7,7 @@ import { UIUtils } from "./UIUtils.js";
 export class EncodingsInterface {
   constructor() {
     this.currentEncoding = "morse";
-    this.currentConversionType = "number";
+    this.currentConversionType = "text";
   }
 
   // Initialize the converter
@@ -83,11 +83,13 @@ export class EncodingsInterface {
       if (config.showConversionType) {
         conversionTypeContainer.style.display = "block";
         DropdownManager.updateConversionTypeOptions(this);
-        this.updateLabelsForConversionType();
       } else {
         conversionTypeContainer.style.display = "none";
       }
     }
+
+    // Always update labels, regardless of showConversionType
+    this.updateLabelsForConversionType();
 
     UIUtils.updatePlaceholders(this);
   }

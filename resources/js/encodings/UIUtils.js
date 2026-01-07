@@ -13,7 +13,16 @@ export class UIUtils {
   // Update labels based on conversion type
   static updateLabelsForConversionType(encodingsInterface) {
     const config = ENCODING_CONFIGS[encodingsInterface.currentEncoding];
-    if (!config || !config.showConversionType) return;
+    if (!config || !config.showConversionType) {
+      // Handle simple encodings like Morse (no conversion type selector)
+      if (encodingsInterface.currentEncoding === "morse") {
+        this.updateElement("input-label", "Text Input");          
+        this.updateElement("output-label", "Morse Code Output");
+        this.updateElement("encode-btn-text", "Text → Morse");    
+        this.updateElement("decode-btn-text", "Morse → Text"); 
+      }
+      return;
+    }
 
     const conversionType = encodingsInterface.currentConversionType;
     const encoding = encodingsInterface.currentEncoding;
@@ -21,6 +30,7 @@ export class UIUtils {
     if (encoding === "braille") {
       this.updateElement("input-label", config.labels.input);
       this.updateElement("encode-btn-text", config.labels.encodeBtn);
+      this.updateElement("output-label", "Braille Output"); // ← Add this
 
       if (conversionType === "braille2_contractions") {
         this.updateElement(
@@ -47,6 +57,19 @@ export class UIUtils {
         this.updateElement("input-label", config.labels[typeKey].input);
         this.updateElement("encode-btn-text", config.labels[typeKey].encodeBtn);
         this.updateElement("decode-btn-text", config.labels[typeKey].decodeBtn);
+
+        // ← Add output label updates
+        if (encoding === "binary") {
+          this.updateElement(
+            "output-label",
+            isNumber ? "Binary Output" : "Binary Output"
+          );
+        } else if (encoding === "hex") {
+          this.updateElement(
+            "output-label",
+            isNumber ? "Hexadecimal Output" : "Hexadecimal Output"
+          );
+        }
       }
 
       const encodedOutput = document.getElementById("encoded-output");
