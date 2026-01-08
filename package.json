@@ -24,14 +24,18 @@
     ],
     "collectCoverageFrom": [
       "src/**/*.js",
-      "!src/**/__tests__/**"
-    ]
+      "resources/js/**/*.js",
+      "!src/**/__tests__/**",
+      "!resources/js/**/__tests__/**"
+    ],
+    "injectGlobals": true
   },
   "dependencies": {
     "handlebars": "^4.7.8"
   },
   "devDependencies": {
     "http-server": "^14.1.1",
-    "jest": "^30.0.5"
+    "jest": "^30.0.5",
+    "jest-environment-jsdom": "^30.2.0"
   }
 }
