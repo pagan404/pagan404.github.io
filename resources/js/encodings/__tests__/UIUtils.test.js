@@ -11,7 +11,6 @@ import {
   afterEach,
 } from "@jest/globals";
 import { UIUtils } from "../UIUtils.js";
-import { ENCODING_CONFIGS } from "../config.js";
 
 describe("UIUtils", () => {
   // Setup: Create mock DOM before each test

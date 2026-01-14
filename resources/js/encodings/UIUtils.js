@@ -16,10 +16,10 @@ export class UIUtils {
     if (!config || !config.showConversionType) {
       // Handle simple encodings like Morse (no conversion type selector)
       if (encodingsInterface.currentEncoding === "morse") {
-        this.updateElement("input-label", "Text Input");          
+        this.updateElement("input-label", "Text Input");
         this.updateElement("output-label", "Morse Code Output");
-        this.updateElement("encode-btn-text", "Text → Morse");    
-        this.updateElement("decode-btn-text", "Morse → Text"); 
+        this.updateElement("encode-btn-text", "Text → Morse");
+        this.updateElement("decode-btn-text", "Morse → Text");
       }
       return;
     }
@@ -125,7 +125,7 @@ export class UIUtils {
     const encodedOutput = document.getElementById("encoded-output");
     if (encodedOutput && encodedOutput.value) {
       const uiConfig = ENCODING_CONFIGS.ui;
-      navigator.clipboard
+      return navigator.clipboard
         .writeText(encodedOutput.value)
         .then(() => {
           const copyBtn = document.getElementById("copy-result");
@@ -139,7 +139,8 @@ export class UIUtils {
         })
         .catch((err) => {
           console.error("Failed to copy: ", err);
-        });
+        }); 
     }
+    return Promise.resolve();
   }
 }
