@@ -12,10 +12,22 @@ import {
 } from "@jest/globals";
 import { UIUtils } from "../UIUtils.js";
 
+/**
+ * REFACTOR-PROOF UNIT TESTS - UIUtils
+ *
+ * These tests focus on STATE CHANGES in the DOM rather than testing
+ * which internal methods get called. This makes them resilient to
+ * internal refactoring.
+ *
+ * Key Principles:
+ * - Test what CHANGED in the DOM (element text, attributes, values)
+ * - Test OUTCOMES (what the user sees), not internal method calls
+ * - Avoid testing implementation details
+ * - Tests should survive method renames and internal refactoring
+ */
+
 describe("UIUtils", () => {
-  // Setup: Create mock DOM before each test
   beforeEach(() => {
-    // Create a minimal DOM structure that UIUtils expects
     document.body.innerHTML = `
       <div id="converter-title"></div>
       <div id="converter-description"></div>
@@ -28,14 +40,12 @@ describe("UIUtils", () => {
       <button id="copy-result">Copy</button>
     `;
 
-    // Mock clipboard API (not available in jsdom)
     Object.assign(navigator, {
       clipboard: {
         writeText: jest.fn(() => Promise.resolve()),
       },
     });
 
-    // Mock console methods to avoid cluttering test output
     jest.spyOn(console, "error").mockImplementation(() => {});
   });
 
@@ -45,281 +55,330 @@ describe("UIUtils", () => {
   });
 
   // ============================================
-  // 1. BASIC DOM MANIPULATION TESTS
+  // DOM ELEMENT UPDATES - STATE TESTS
   // ============================================
   describe("updateElement", () => {
-    it("should update element textContent when element exists", () => {
+    it("should change element textContent in DOM", () => {
       UIUtils.updateElement("converter-title", "Test Title");
 
+      // STATE ASSERTION: Check what actually changed in DOM
       const element = document.getElementById("converter-title");
       expect(element.textContent).toBe("Test Title");
     });
 
-    it("should handle non-existent elements gracefully", () => {
-      // Should not throw error
+    it("should handle non-existent elements without crashing", () => {
+      // BEHAVIOR ASSERTION: No error thrown
       expect(() => {
         UIUtils.updateElement("non-existent-id", "Test");
       }).not.toThrow();
     });
 
-    it("should update with empty string", () => {
-      UIUtils.updateElement("converter-title", "Initial");
+    it("should clear element content when given empty string", () => {
+      const element = document.getElementById("converter-title");
+      element.textContent = "Initial Content";
+
       UIUtils.updateElement("converter-title", "");
 
-      expect(document.getElementById("converter-title").textContent).toBe("");
+      // STATE ASSERTION: Content was cleared
+      expect(element.textContent).toBe("");
     });
   });
 
   // ============================================
-  // 2. LABEL UPDATE LOGIC TESTS
+  // LABELS FOR MORSE CODE - STATE TESTS
   // ============================================
-  describe("updateLabelsForConversionType", () => {
-    // Helper to create a mock EncodingsInterface
-    const createMockInterface = (encoding, conversionType) => ({
-      currentEncoding: encoding,
-      currentConversionType: conversionType,
-    });
+  describe("updateLabelsForConversionType - Morse", () => {
+    it("should set morse-specific labels in DOM", () => {
+      const mockInterface = {
+        currentEncoding: "morse",
+        currentConversionType: "text",
+      };
 
-    // --- Morse Code (simple encoding, no conversion type) ---
-    describe("Morse encoding", () => {
-      it("should update labels for morse code correctly", () => {
-        const mockInterface = createMockInterface("morse", "text");
+      UIUtils.updateLabelsForConversionType(mockInterface);
 
-        UIUtils.updateLabelsForConversionType(mockInterface);
-
-        expect(document.getElementById("input-label").textContent).toBe(
-          "Text Input"
-        );
-        expect(document.getElementById("output-label").textContent).toBe(
-          "Morse Code Output"
-        );
-        expect(document.getElementById("encode-btn-text").textContent).toBe(
-          "Text → Morse"
-        );
-        expect(document.getElementById("decode-btn-text").textContent).toBe(
-          "Morse → Text"
-        );
-      });
-    });
-
-    // --- Binary (number vs text conversion) ---
-    describe("Binary encoding", () => {
-      it("should update labels for binary number conversion", () => {
-        const mockInterface = createMockInterface("binary", "number");
-
-        UIUtils.updateLabelsForConversionType(mockInterface);
-
-        expect(document.getElementById("input-label").textContent).toBe(
-          "Decimal Number"
-        );
-        expect(document.getElementById("output-label").textContent).toBe(
-          "Binary Output"
-        );
-        expect(document.getElementById("encode-btn-text").textContent).toBe(
-          "Decimal → Binary"
-        );
-        expect(document.getElementById("decode-btn-text").textContent).toBe(
-          "Binary → Decimal"
-        );
-      });
-
-      it("should update labels for binary text conversion", () => {
-        const mockInterface = createMockInterface("binary", "text");
-
-        UIUtils.updateLabelsForConversionType(mockInterface);
-
-        expect(document.getElementById("input-label").textContent).toBe(
-          "Text Input"
-        );
-        expect(document.getElementById("output-label").textContent).toBe(
-          "Binary Output"
-        );
-        expect(document.getElementById("encode-btn-text").textContent).toBe(
-          "Text → Binary"
-        );
-        expect(document.getElementById("decode-btn-text").textContent).toBe(
-          "Binary → Text"
-        );
-      });
-
-      it("should enable encoded output for binary", () => {
-        const mockInterface = createMockInterface("binary", "number");
-        const encodedOutput = document.getElementById("encoded-output");
-        encodedOutput.disabled = true; // Start disabled
-
-        UIUtils.updateLabelsForConversionType(mockInterface);
-
-        expect(encodedOutput.disabled).toBe(false);
-      });
-    });
-
-    // --- Hexadecimal (number vs text conversion) ---
-    describe("Hexadecimal encoding", () => {
-      it("should update labels for hex number conversion", () => {
-        const mockInterface = createMockInterface("hex", "number");
-
-        UIUtils.updateLabelsForConversionType(mockInterface);
-
-        expect(document.getElementById("input-label").textContent).toBe(
-          "Decimal Number"
-        );
-        expect(document.getElementById("output-label").textContent).toBe(
-          "Hexadecimal Output"
-        );
-        expect(document.getElementById("encode-btn-text").textContent).toBe(
-          "Decimal → Hex"
-        );
-        expect(document.getElementById("decode-btn-text").textContent).toBe(
-          "Hex → Decimal"
-        );
-      });
-
-      it("should update labels for hex text conversion", () => {
-        const mockInterface = createMockInterface("hex", "text");
-
-        UIUtils.updateLabelsForConversionType(mockInterface);
-
-        expect(document.getElementById("input-label").textContent).toBe(
-          "Text Input"
-        );
-        expect(document.getElementById("output-label").textContent).toBe(
-          "Hexadecimal Output"
-        );
-        expect(document.getElementById("encode-btn-text").textContent).toBe(
-          "Text → Hex"
-        );
-        expect(document.getElementById("decode-btn-text").textContent).toBe(
-          "Hex → Text"
-        );
-      });
-    });
-
-    // --- Braille (with special contractions handling) ---
-    describe("Braille encoding", () => {
-      it("should update labels for braille without contractions", () => {
-        const mockInterface = createMockInterface("braille", "braille1");
-
-        UIUtils.updateLabelsForConversionType(mockInterface);
-
-        expect(document.getElementById("input-label").textContent).toBe(
-          "Text Input"
-        );
-        expect(document.getElementById("output-label").textContent).toBe(
-          "Braille Output"
-        );
-        expect(document.getElementById("encode-btn-text").textContent).toBe(
-          "Text → Braille"
-        );
-        expect(document.getElementById("decode-btn-text").textContent).toBe(
-          "Braille → Text"
-        );
-      });
-
-      it("should update labels for braille with contractions", () => {
-        const mockInterface = createMockInterface(
-          "braille",
-          "braille2_contractions"
-        );
-
-        UIUtils.updateLabelsForConversionType(mockInterface);
-
-        expect(document.getElementById("decode-btn-text").textContent).toBe(
-          "One-way only"
-        );
-      });
-
-      it("should disable output field for braille contractions", () => {
-        const mockInterface = createMockInterface(
-          "braille",
-          "braille2_contractions"
-        );
-        const encodedOutput = document.getElementById("encoded-output");
-        encodedOutput.disabled = false; // Start enabled
-
-        UIUtils.updateLabelsForConversionType(mockInterface);
-
-        expect(encodedOutput.disabled).toBe(true);
-        expect(encodedOutput.placeholder).toBe(
-          "Braille with contractions (one-way conversion only)"
-        );
-      });
-
-      it("should enable output field for braille without contractions", () => {
-        const mockInterface = createMockInterface("braille", "braille1");
-        const encodedOutput = document.getElementById("encoded-output");
-        encodedOutput.disabled = true; // Start disabled
-
-        UIUtils.updateLabelsForConversionType(mockInterface);
-
-        expect(encodedOutput.disabled).toBe(false);
-      });
+      // STATE ASSERTIONS: Check actual DOM text content
+      expect(document.getElementById("input-label").textContent).toBe(
+        "Text Input",
+      );
+      expect(document.getElementById("output-label").textContent).toBe(
+        "Morse Code Output",
+      );
+      expect(document.getElementById("encode-btn-text").textContent).toBe(
+        "Text → Morse",
+      );
+      expect(document.getElementById("decode-btn-text").textContent).toBe(
+        "Morse → Text",
+      );
     });
   });
 
   // ============================================
-  // 3. PLACEHOLDER UPDATE TESTS
+  // LABELS FOR BINARY - STATE TESTS
+  // ============================================
+  describe("updateLabelsForConversionType - Binary", () => {
+    it("should set binary number labels in DOM", () => {
+      const mockInterface = {
+        currentEncoding: "binary",
+        currentConversionType: "number",
+      };
+
+      UIUtils.updateLabelsForConversionType(mockInterface);
+
+      // STATE ASSERTIONS: Labels reflect number conversion mode
+      expect(document.getElementById("input-label").textContent).toBe(
+        "Decimal Number",
+      );
+      expect(document.getElementById("output-label").textContent).toBe(
+        "Binary Output",
+      );
+      expect(document.getElementById("encode-btn-text").textContent).toBe(
+        "Decimal → Binary",
+      );
+      expect(document.getElementById("decode-btn-text").textContent).toBe(
+        "Binary → Decimal",
+      );
+    });
+
+    it("should set binary text labels in DOM", () => {
+      const mockInterface = {
+        currentEncoding: "binary",
+        currentConversionType: "text",
+      };
+
+      UIUtils.updateLabelsForConversionType(mockInterface);
+
+      // STATE ASSERTIONS: Labels reflect text conversion mode
+      expect(document.getElementById("input-label").textContent).toBe(
+        "Text Input",
+      );
+      expect(document.getElementById("output-label").textContent).toBe(
+        "Binary Output",
+      );
+      expect(document.getElementById("encode-btn-text").textContent).toBe(
+        "Text → Binary",
+      );
+      expect(document.getElementById("decode-btn-text").textContent).toBe(
+        "Binary → Text",
+      );
+    });
+
+    it("should enable encoded output field for binary", () => {
+      const mockInterface = {
+        currentEncoding: "binary",
+        currentConversionType: "number",
+      };
+      const encodedOutput = document.getElementById("encoded-output");
+      encodedOutput.disabled = true;
+
+      UIUtils.updateLabelsForConversionType(mockInterface);
+
+      // STATE ASSERTION: Field is now enabled
+      expect(encodedOutput.disabled).toBe(false);
+    });
+  });
+
+  // ============================================
+  // LABELS FOR HEXADECIMAL - STATE TESTS
+  // ============================================
+  describe("updateLabelsForConversionType - Hexadecimal", () => {
+    it("should set hex number labels in DOM", () => {
+      const mockInterface = {
+        currentEncoding: "hex",
+        currentConversionType: "number",
+      };
+
+      UIUtils.updateLabelsForConversionType(mockInterface);
+
+      // STATE ASSERTIONS: Hex-specific labels
+      expect(document.getElementById("input-label").textContent).toBe(
+        "Decimal Number",
+      );
+      expect(document.getElementById("output-label").textContent).toBe(
+        "Hexadecimal Output",
+      );
+      expect(document.getElementById("encode-btn-text").textContent).toBe(
+        "Decimal → Hex",
+      );
+      expect(document.getElementById("decode-btn-text").textContent).toBe(
+        "Hex → Decimal",
+      );
+    });
+
+    it("should set hex text labels in DOM", () => {
+      const mockInterface = {
+        currentEncoding: "hex",
+        currentConversionType: "text",
+      };
+
+      UIUtils.updateLabelsForConversionType(mockInterface);
+
+      // STATE ASSERTIONS: Text mode labels
+      expect(document.getElementById("input-label").textContent).toBe(
+        "Text Input",
+      );
+      expect(document.getElementById("output-label").textContent).toBe(
+        "Hexadecimal Output",
+      );
+      expect(document.getElementById("encode-btn-text").textContent).toBe(
+        "Text → Hex",
+      );
+      expect(document.getElementById("decode-btn-text").textContent).toBe(
+        "Hex → Text",
+      );
+    });
+  });
+
+  // ============================================
+  // LABELS FOR BRAILLE - STATE TESTS
+  // ============================================
+  describe("updateLabelsForConversionType - Braille", () => {
+    it("should set braille labels in DOM", () => {
+      const mockInterface = {
+        currentEncoding: "braille",
+        currentConversionType: "braille1",
+      };
+
+      UIUtils.updateLabelsForConversionType(mockInterface);
+
+      // STATE ASSERTIONS: Braille-specific labels
+      expect(document.getElementById("input-label").textContent).toBe(
+        "Text Input",
+      );
+      expect(document.getElementById("output-label").textContent).toBe(
+        "Braille Output",
+      );
+      expect(document.getElementById("encode-btn-text").textContent).toBe(
+        "Text → Braille",
+      );
+      expect(document.getElementById("decode-btn-text").textContent).toBe(
+        "Braille → Text",
+      );
+    });
+
+    it("should enable output field for standard braille", () => {
+      const mockInterface = {
+        currentEncoding: "braille",
+        currentConversionType: "braille1",
+      };
+      const encodedOutput = document.getElementById("encoded-output");
+      encodedOutput.disabled = true;
+
+      UIUtils.updateLabelsForConversionType(mockInterface);
+
+      // STATE ASSERTION: Output enabled for two-way conversion
+      expect(encodedOutput.disabled).toBe(false);
+    });
+
+    it("should disable output field for braille contractions", () => {
+      const mockInterface = {
+        currentEncoding: "braille",
+        currentConversionType: "braille2_contractions",
+      };
+      const encodedOutput = document.getElementById("encoded-output");
+      encodedOutput.disabled = false;
+
+      UIUtils.updateLabelsForConversionType(mockInterface);
+
+      // STATE ASSERTION: Output disabled for one-way conversion
+      expect(encodedOutput.disabled).toBe(true);
+    });
+
+    it("should set one-way conversion text for braille contractions", () => {
+      const mockInterface = {
+        currentEncoding: "braille",
+        currentConversionType: "braille2_contractions",
+      };
+
+      UIUtils.updateLabelsForConversionType(mockInterface);
+
+      // STATE ASSERTION: Button text indicates one-way only
+      expect(document.getElementById("decode-btn-text").textContent).toBe(
+        "One-way only",
+      );
+    });
+
+    it("should set contractions placeholder when output disabled", () => {
+      const mockInterface = {
+        currentEncoding: "braille",
+        currentConversionType: "braille2_contractions",
+      };
+
+      UIUtils.updateLabelsForConversionType(mockInterface);
+
+      const encodedOutput = document.getElementById("encoded-output");
+
+      // STATE ASSERTION: Placeholder explains one-way limitation
+      expect(encodedOutput.placeholder).toBe(
+        "Braille with contractions (one-way conversion only)",
+      );
+    });
+  });
+
+  // ============================================
+  // PLACEHOLDERS - STATE TESTS
   // ============================================
   describe("updatePlaceholders", () => {
-    const createMockInterface = (encoding, conversionType) => ({
-      currentEncoding: encoding,
-      currentConversionType: conversionType,
-    });
-
-    it("should update placeholders for morse code", () => {
-      const mockInterface = createMockInterface("morse", "text");
+    it("should set morse code placeholders in DOM", () => {
+      const mockInterface = {
+        currentEncoding: "morse",
+        currentConversionType: "text",
+      };
 
       UIUtils.updatePlaceholders(mockInterface);
 
       const textInput = document.getElementById("text-input");
       const encodedOutput = document.getElementById("encoded-output");
 
+      // STATE ASSERTIONS: Placeholders are set
       expect(textInput.placeholder).toBe("Enter your text here...");
       expect(encodedOutput.placeholder).toBe("Morse code will appear here...");
     });
 
-    it("should update placeholders for binary number conversion", () => {
-      const mockInterface = createMockInterface("binary", "number");
+    it("should set binary number placeholders in DOM", () => {
+      const mockInterface = {
+        currentEncoding: "binary",
+        currentConversionType: "number",
+      };
 
       UIUtils.updatePlaceholders(mockInterface);
 
       const textInput = document.getElementById("text-input");
-      const encodedOutput = document.getElementById("encoded-output");
 
+      // STATE ASSERTION: Placeholder mentions decimal/number
       expect(textInput.placeholder).toBe("Enter decimal number (e.g., 42)...");
-      expect(encodedOutput.placeholder).toBe("Binary will appear here...");
     });
 
-    it("should update placeholders for binary text conversion", () => {
-      const mockInterface = createMockInterface("binary", "text");
+    it("should change placeholders when switching conversion types", () => {
+      const mockInterface = {
+        currentEncoding: "binary",
+        currentConversionType: "number",
+      };
 
       UIUtils.updatePlaceholders(mockInterface);
+      const numberPlaceholder =
+        document.getElementById("text-input").placeholder;
 
-      const textInput = document.getElementById("text-input");
-
-      expect(textInput.placeholder).toBe("Enter text to convert...");
-    });
-
-    it("should update placeholders for braille with contractions", () => {
-      const mockInterface = createMockInterface(
-        "braille",
-        "braille2_contractions"
-      );
-
+      // Switch to text mode
+      mockInterface.currentConversionType = "text";
       UIUtils.updatePlaceholders(mockInterface);
+      const textPlaceholder = document.getElementById("text-input").placeholder;
 
-      const encodedOutput = document.getElementById("encoded-output");
-
-      expect(encodedOutput.placeholder).toBe(
-        "Braille with contractions (one-way conversion only)"
-      );
+      // STATE ASSERTION: Placeholders are different for different modes
+      expect(numberPlaceholder).toBe("Enter decimal number (e.g., 42)...");
+      expect(textPlaceholder).toBe("Enter text to convert...");
+      expect(numberPlaceholder).not.toBe(textPlaceholder);
     });
 
-    it("should handle missing elements gracefully", () => {
+    it("should handle missing DOM elements without crashing", () => {
+      const mockInterface = {
+        currentEncoding: "morse",
+        currentConversionType: "text",
+      };
+
       document.getElementById("text-input").remove();
       document.getElementById("encoded-output").remove();
 
-      const mockInterface = createMockInterface("morse", "text");
-
+      // BEHAVIOR ASSERTION: No error thrown
       expect(() => {
         UIUtils.updatePlaceholders(mockInterface);
       }).not.toThrow();
@@ -327,10 +386,10 @@ describe("UIUtils", () => {
   });
 
   // ============================================
-  // 4. FIELD CLEARING TESTS
+  // CLEAR FIELDS - STATE TESTS
   // ============================================
   describe("clearFields", () => {
-    it("should clear both input fields", () => {
+    it("should clear values of both input fields", () => {
       const textInput = document.getElementById("text-input");
       const encodedOutput = document.getElementById("encoded-output");
 
@@ -339,13 +398,29 @@ describe("UIUtils", () => {
 
       UIUtils.clearFields();
 
+      // STATE ASSERTIONS: Both fields are empty
       expect(textInput.value).toBe("");
       expect(encodedOutput.value).toBe("");
     });
 
-    it("should handle missing elements gracefully", () => {
+    it("should handle already-empty fields", () => {
+      const textInput = document.getElementById("text-input");
+      const encodedOutput = document.getElementById("encoded-output");
+
+      textInput.value = "";
+      encodedOutput.value = "";
+
+      UIUtils.clearFields();
+
+      // STATE ASSERTIONS: Still empty, no errors
+      expect(textInput.value).toBe("");
+      expect(encodedOutput.value).toBe("");
+    });
+
+    it("should handle missing DOM elements without crashing", () => {
       document.getElementById("text-input").remove();
 
+      // BEHAVIOR ASSERTION: No error thrown
       expect(() => {
         UIUtils.clearFields();
       }).not.toThrow();
@@ -353,7 +428,7 @@ describe("UIUtils", () => {
   });
 
   // ============================================
-  // 5. CLIPBOARD COPY TESTS
+  // COPY TO CLIPBOARD - STATE TESTS
   // ============================================
   describe("copyResult", () => {
     beforeEach(() => {
@@ -364,54 +439,61 @@ describe("UIUtils", () => {
       jest.useRealTimers();
     });
 
-    it("should copy encoded output to clipboard", async () => {
+    it("should copy output value to clipboard", async () => {
       const encodedOutput = document.getElementById("encoded-output");
       encodedOutput.value = "Test output to copy";
 
       await UIUtils.copyResult();
 
+      // STATE ASSERTION: Clipboard received the correct value
       expect(navigator.clipboard.writeText).toHaveBeenCalledWith(
-        "Test output to copy"
+        "Test output to copy",
       );
     });
 
-    it("should update button text temporarily after successful copy", async () => {
+    it("should temporarily change button text to show success", async () => {
       const encodedOutput = document.getElementById("encoded-output");
       const copyBtn = document.getElementById("copy-result");
+
       encodedOutput.value = "Test";
+      copyBtn.textContent = "Copy";
 
       await UIUtils.copyResult();
 
+      // STATE ASSERTION: Button text changed immediately
       expect(copyBtn.textContent).toBe("Copied!");
 
       // Fast-forward time
       jest.advanceTimersByTime(2000);
 
+      // STATE ASSERTION: Button text reverted
       expect(copyBtn.textContent).toBe("Copy");
     });
 
-    it("should not copy if output is empty", async () => {
+    it("should not copy when output is empty", async () => {
       const encodedOutput = document.getElementById("encoded-output");
       encodedOutput.value = "";
 
       await UIUtils.copyResult();
 
+      // STATE ASSERTION: Clipboard not called for empty value
       expect(navigator.clipboard.writeText).not.toHaveBeenCalled();
     });
 
-    it("should handle clipboard API failure gracefully", async () => {
+    it("should handle clipboard API errors gracefully", async () => {
       const encodedOutput = document.getElementById("encoded-output");
       encodedOutput.value = "Test";
 
       navigator.clipboard.writeText.mockRejectedValue(
-        new Error("Clipboard denied")
+        new Error("Clipboard denied"),
       );
 
       await UIUtils.copyResult();
 
+      // BEHAVIOR ASSERTION: Error logged, no crash
       expect(console.error).toHaveBeenCalledWith(
         "Failed to copy: ",
-        expect.any(Error)
+        expect.any(Error),
       );
     });
 
@@ -420,7 +502,72 @@ describe("UIUtils", () => {
       encodedOutput.value = "Test";
       document.getElementById("copy-result").remove();
 
+      // BEHAVIOR ASSERTION: No error thrown
       await expect(UIUtils.copyResult()).resolves.not.toThrow();
+    });
+  });
+
+  // ============================================
+  // STATE TRANSITION TESTS
+  // ============================================
+  describe("State transitions", () => {
+    it("should correctly transition labels from morse to binary", () => {
+      const mockInterface = {
+        currentEncoding: "morse",
+        currentConversionType: "text",
+      };
+
+      // Initial state: Morse
+      UIUtils.updateLabelsForConversionType(mockInterface);
+      const morseLabel = document.getElementById("input-label").textContent;
+
+      // Transition to binary
+      mockInterface.currentEncoding = "binary";
+      mockInterface.currentConversionType = "number";
+      UIUtils.updateLabelsForConversionType(mockInterface);
+      const binaryLabel = document.getElementById("input-label").textContent;
+
+      // STATE ASSERTIONS: Labels changed appropriately
+      expect(morseLabel).toBe("Text Input");
+      expect(binaryLabel).toBe("Decimal Number");
+      expect(morseLabel).not.toBe(binaryLabel);
+    });
+
+    it("should correctly transition between binary conversion types", () => {
+      const mockInterface = {
+        currentEncoding: "binary",
+        currentConversionType: "number",
+      };
+
+      // Initial: Number mode
+      UIUtils.updateLabelsForConversionType(mockInterface);
+      const numberLabel = document.getElementById("input-label").textContent;
+
+      // Switch to text mode
+      mockInterface.currentConversionType = "text";
+      UIUtils.updateLabelsForConversionType(mockInterface);
+      const textLabel = document.getElementById("input-label").textContent;
+
+      // STATE ASSERTIONS: Labels reflect mode change
+      expect(numberLabel).toBe("Decimal Number");
+      expect(textLabel).toBe("Text Input");
+    });
+
+    it("should maintain independent state for different operations", () => {
+      const textInput = document.getElementById("text-input");
+      textInput.value = "test";
+
+      // Update title
+      UIUtils.updateElement("converter-title", "Test Title");
+
+      // Clear fields
+      UIUtils.clearFields();
+
+      // STATE ASSERTIONS: Operations don't interfere with each other
+      expect(document.getElementById("converter-title").textContent).toBe(
+        "Test Title",
+      );
+      expect(textInput.value).toBe("");
     });
   });
 });

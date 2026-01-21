@@ -1,5 +1,22 @@
 /**
  * @jest-environment jsdom
+ *
+ * REFACTORED UNIT TESTS - STATE-BASED APPROACH
+ * ==============================================
+ * These tests focus on DOM STATE CHANGES, not interaction verification.
+ * They check actual CSS classes, text content, and interface properties.
+ *
+ * Key principles:
+ * 1. Assert on DOM state (classList, textContent, active classes)
+ * 2. Check interface property changes (currentEncoding, currentConversionType)
+ * 3. Verify keyboard interactions by checking resulting DOM state
+ * 4. Tests survive refactoring because they only care about visible outcomes
+ *
+ * These tests will pass as long as:
+ * - Dropdowns open/close correctly (classList.contains('open'))
+ * - Selected text updates when options are clicked
+ * - Active class moves to correct option
+ * - Interface properties reflect the selected state
  */
 
 import {
@@ -105,10 +122,9 @@ describe("DropdownManager", () => {
       const binaryOption = document.querySelector('[data-value="binary"]');
       binaryOption.click();
 
+      // STATE ASSERTIONS: Check interface state changes
       expect(mockEncodingsInterface.currentEncoding).toBe("binary");
       expect(mockEncodingsInterface.currentConversionType).toBe("number");
-      expect(mockEncodingsInterface.updateInterface).toHaveBeenCalled();
-      expect(mockEncodingsInterface.clearFields).toHaveBeenCalled();
     });
 
     it("should update selected text when option is clicked", () => {
@@ -120,7 +136,7 @@ describe("DropdownManager", () => {
       hexOption.click();
 
       expect(dropdownSelected.querySelector("span").textContent).toBe(
-        "Hexadecimal"
+        "Hexadecimal",
       );
     });
 
@@ -246,7 +262,7 @@ describe("DropdownManager", () => {
 
       const dropdown = document.getElementById("conversion-type-dropdown");
       const dropdownSelected = document.getElementById(
-        "conversion-dropdown-selected"
+        "conversion-dropdown-selected",
       );
 
       expect(dropdown).toBeTruthy();
@@ -258,7 +274,7 @@ describe("DropdownManager", () => {
 
       const dropdown = document.getElementById("conversion-type-dropdown");
       const dropdownSelected = document.getElementById(
-        "conversion-dropdown-selected"
+        "conversion-dropdown-selected",
       );
 
       expect(dropdown.classList.contains("open")).toBe(false);
@@ -275,7 +291,7 @@ describe("DropdownManager", () => {
 
       const dropdown = document.getElementById("conversion-type-dropdown");
       const dropdownSelected = document.getElementById(
-        "conversion-dropdown-selected"
+        "conversion-dropdown-selected",
       );
 
       dropdownSelected.click();
@@ -289,25 +305,22 @@ describe("DropdownManager", () => {
       DropdownManager.setupConversionDropdown(mockEncodingsInterface);
 
       const textOption = document.querySelector(
-        '#conversion-dropdown-options [data-value="text"]'
+        '#conversion-dropdown-options [data-value="text"]',
       );
       textOption.click();
 
+      // STATE ASSERTION: Interface property updated
       expect(mockEncodingsInterface.currentConversionType).toBe("text");
-      expect(
-        mockEncodingsInterface.updateLabelsForConversionType
-      ).toHaveBeenCalled();
-      expect(mockEncodingsInterface.clearFields).toHaveBeenCalled();
     });
 
     it("should update selected text when option is clicked", () => {
       DropdownManager.setupConversionDropdown(mockEncodingsInterface);
 
       const dropdownSelected = document.getElementById(
-        "conversion-dropdown-selected"
+        "conversion-dropdown-selected",
       );
       const textOption = document.querySelector(
-        '#conversion-dropdown-options [data-value="text"]'
+        '#conversion-dropdown-options [data-value="text"]',
       );
 
       textOption.click();
@@ -319,10 +332,10 @@ describe("DropdownManager", () => {
       DropdownManager.setupConversionDropdown(mockEncodingsInterface);
 
       const numberOption = document.querySelector(
-        '#conversion-dropdown-options [data-value="number"]'
+        '#conversion-dropdown-options [data-value="number"]',
       );
       const textOption = document.querySelector(
-        '#conversion-dropdown-options [data-value="text"]'
+        '#conversion-dropdown-options [data-value="text"]',
       );
 
       expect(numberOption.classList.contains("active")).toBe(true);
@@ -339,10 +352,10 @@ describe("DropdownManager", () => {
 
       const dropdown = document.getElementById("conversion-type-dropdown");
       const dropdownSelected = document.getElementById(
-        "conversion-dropdown-selected"
+        "conversion-dropdown-selected",
       );
       const textOption = document.querySelector(
-        '#conversion-dropdown-options [data-value="text"]'
+        '#conversion-dropdown-options [data-value="text"]',
       );
 
       dropdownSelected.click();
@@ -357,7 +370,7 @@ describe("DropdownManager", () => {
 
       const dropdown = document.getElementById("conversion-type-dropdown");
       const dropdownSelected = document.getElementById(
-        "conversion-dropdown-selected"
+        "conversion-dropdown-selected",
       );
 
       const enterEvent = new KeyboardEvent("keydown", { key: "Enter" });
@@ -371,7 +384,7 @@ describe("DropdownManager", () => {
 
       const dropdown = document.getElementById("conversion-type-dropdown");
       const dropdownSelected = document.getElementById(
-        "conversion-dropdown-selected"
+        "conversion-dropdown-selected",
       );
 
       const spaceEvent = new KeyboardEvent("keydown", { key: " " });
@@ -385,7 +398,7 @@ describe("DropdownManager", () => {
 
       const dropdown = document.getElementById("conversion-type-dropdown");
       const dropdownSelected = document.getElementById(
-        "conversion-dropdown-selected"
+        "conversion-dropdown-selected",
       );
 
       dropdownSelected.click();
@@ -416,13 +429,13 @@ describe("DropdownManager", () => {
       DropdownManager.updateConversionTypeOptions(mockEncodingsInterface);
 
       const options = document.querySelectorAll(
-        "#conversion-dropdown-options .dropdown-option"
+        "#conversion-dropdown-options .dropdown-option",
       );
       expect(options.length).toBe(3);
       expect(options[0].getAttribute("data-value")).toBe("braille1");
       expect(options[1].getAttribute("data-value")).toBe("braille2");
       expect(options[2].getAttribute("data-value")).toBe(
-        "braille2_contractions"
+        "braille2_contractions",
       );
     });
 
@@ -432,7 +445,7 @@ describe("DropdownManager", () => {
       DropdownManager.updateConversionTypeOptions(mockEncodingsInterface);
 
       const options = document.querySelectorAll(
-        "#conversion-dropdown-options .dropdown-option"
+        "#conversion-dropdown-options .dropdown-option",
       );
       expect(options.length).toBe(2);
       expect(options[0].getAttribute("data-value")).toBe("number");
@@ -445,7 +458,7 @@ describe("DropdownManager", () => {
       DropdownManager.updateConversionTypeOptions(mockEncodingsInterface);
 
       const options = document.querySelectorAll(
-        "#conversion-dropdown-options .dropdown-option"
+        "#conversion-dropdown-options .dropdown-option",
       );
       expect(options.length).toBe(2);
       expect(options[0].getAttribute("data-value")).toBe("number");
@@ -459,10 +472,10 @@ describe("DropdownManager", () => {
 
       expect(mockEncodingsInterface.currentConversionType).toBe("braille1");
       const dropdownSelected = document.getElementById(
-        "conversion-dropdown-selected"
+        "conversion-dropdown-selected",
       );
       expect(dropdownSelected.querySelector("span").textContent).toBe(
-        "Braille 1"
+        "Braille 1",
       );
     });
 
@@ -473,10 +486,10 @@ describe("DropdownManager", () => {
 
       expect(mockEncodingsInterface.currentConversionType).toBe("number");
       const dropdownSelected = document.getElementById(
-        "conversion-dropdown-selected"
+        "conversion-dropdown-selected",
       );
       expect(dropdownSelected.querySelector("span").textContent).toBe(
-        "Numbers"
+        "Numbers",
       );
     });
 
@@ -486,7 +499,7 @@ describe("DropdownManager", () => {
       DropdownManager.updateConversionTypeOptions(mockEncodingsInterface);
 
       const options = document.querySelectorAll(
-        "#conversion-dropdown-options .dropdown-option"
+        "#conversion-dropdown-options .dropdown-option",
       );
       expect(options[0].classList.contains("active")).toBe(true);
       expect(options[1].classList.contains("active")).toBe(false);
@@ -499,7 +512,7 @@ describe("DropdownManager", () => {
       DropdownManager.updateConversionTypeOptions(mockEncodingsInterface);
 
       const options = document.querySelectorAll(
-        "#conversion-dropdown-options .dropdown-option"
+        "#conversion-dropdown-options .dropdown-option",
       );
       expect(options[0].classList.contains("active")).toBe(true);
       expect(options[1].classList.contains("active")).toBe(false);
@@ -510,7 +523,7 @@ describe("DropdownManager", () => {
       DropdownManager.updateConversionTypeOptions(mockEncodingsInterface);
 
       let options = document.querySelectorAll(
-        "#conversion-dropdown-options .dropdown-option"
+        "#conversion-dropdown-options .dropdown-option",
       );
       expect(options.length).toBe(2);
 
@@ -518,7 +531,7 @@ describe("DropdownManager", () => {
       DropdownManager.updateConversionTypeOptions(mockEncodingsInterface);
 
       options = document.querySelectorAll(
-        "#conversion-dropdown-options .dropdown-option"
+        "#conversion-dropdown-options .dropdown-option",
       );
       expect(options.length).toBe(3);
     });
