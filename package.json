@@ -10,6 +10,9 @@
     "dev": "npm run build && npm run serve",
     "add-article": "node add-article.js",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest",
+    "test:unit": "NODE_OPTIONS=--experimental-vm-modules jest __tests__",
+    "test:integration": "NODE_OPTIONS=--experimental-vm-modules jest __integration__",
+    "test:integration:watch": "NODE_OPTIONS=--experimental-vm-modules jest __integration__ --watch",
     "test:watch": "NODE_OPTIONS=--experimental-vm-modules jest --watch",
     "test:coverage": "NODE_OPTIONS=--experimental-vm-modules jest --coverage"
   },
@@ -20,13 +23,16 @@
     "transform": {},
     "testEnvironment": "node",
     "testMatch": [
-      "**/__tests__/**/*.test.js"
+      "**/__tests__/**/*.test.js",
+      "**/__integration__/**/*.test.js"
     ],
     "collectCoverageFrom": [
       "src/**/*.js",
       "resources/js/**/*.js",
       "!src/**/__tests__/**",
-      "!resources/js/**/__tests__/**"
+      "!resources/js/**/__tests__/**",
+      "!src/**/__integration__/**",
+      "!resources/js/**/__integration__/**"
     ],
     "injectGlobals": true
   },
