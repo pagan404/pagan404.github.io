@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -10,9 +10,7 @@
     <header>
       <nav class="topnav">
         <h1 class="branding">Pagan's Blog</h1>
-        <button class="mobile-menu-toggle">
-          ☰
-        </button>
+        <button class="mobile-menu-toggle">☰</button>
         <div class="nav-links" id="nav-links">
           <a href="index.html">Home</a>
           <a href="encodings.html">Encodings</a>
@@ -22,7 +20,62 @@
     </header>
 
     <main>
-      <!-- Workshop content will go here -->
+      <div class="encodings-container">
+        <div class="page-header">
+          <h1>Braille Converter</h1>
+          <p>
+            Convert text to Braille and back using the tool below.
+          </p>
+        </div>
+
+        <!-- Universal Converter Interface -->
+        <div class="converter-container">
+          <div class="converter-help">
+            <strong>How to use:</strong>
+            <span id="help-text"
+              >Enter text in the left box to see encoded text, or enter encoded
+              text in the right box to see decoded text.</span
+            >
+          </div>
+
+          <div class="converter-grid">
+            <div class="input-section">
+              <h3 id="input-label">Text Input</h3>
+              <textarea
+                id="text-input"
+                class="converter-textarea"
+                placeholder="Enter your text here..."
+              ></textarea>
+            </div>
+
+            <div class="output-section">
+              <h3 id="output-label">Braille Output</h3>
+              <div class="encoded-output-wrapper">
+                <textarea
+                  id="encoded-output"
+                  class="converter-textarea"
+                  placeholder="Encoded text will appear here..."
+                ></textarea>
+              </div>
+            </div>
+          </div>
+
+          <div class="converter-controls">
+            <button id="text-to-encoded" class="converter-btn primary">
+              <span id="encode-btn-text">Text → Braille</span>
+            </button>
+            <button id="encoded-to-text" class="converter-btn secondary">
+              <span id="decode-btn-text">Braille → Text</span>
+            </button>
+            <button id="clear-all" class="converter-btn danger">
+              Clear All
+            </button>
+            <button id="copy-result" class="converter-btn success">
+              Copy Result
+            </button>
+          </div>
+        </div>
+      </div>
     </main>
 
     <footer>
