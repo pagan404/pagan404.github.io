@@ -1,0 +1,14 @@
+name = "braille-translator"
+main = "workers/translate-braille.js"
+compatibility_date = "2024-01-23"
+
+# Optional: Enable rate limiting with KV storage
+# Uncomment these lines if you want rate limiting
+# kv_namespaces = [
+#   { binding = "RATE_LIMIT", id = "your-kv-namespace-id" }
+# ]
+
+# Environment variables (secrets)
+# These will be set via: wrangler secret put OPENAI_API_KEY
+# [vars]
+# Add any non-secret environment variables here
