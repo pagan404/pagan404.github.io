@@ -48,7 +48,7 @@ export default {
           ? `Translate this text to Braille Grade 2: ${text}`
           : `Translate this Braille to plain text: ${text}`;
 
-      // Call OpenAI API (you can swap this for Claude, Gemini, etc.)
+      // Call OpenAI API
       const llmResponse = await fetch(
         "https://api.openai.com/v1/chat/completions",
         {

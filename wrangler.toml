@@ -1,6 +1,6 @@
 name = "braille-translator"
 main = "workers/translate-braille.js"
-compatibility_date = "2024-01-23"
+compatibility_date = "2026-01-28"
 
 # Optional: Enable rate limiting with KV storage
 # Uncomment these lines if you want rate limiting

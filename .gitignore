@@ -9,3 +9,8 @@ coverage/
 
 # PNPM files
 pnpm-lock.yaml
+
+# Environment variables
+.env
+.dev.vars
+.wrangler/

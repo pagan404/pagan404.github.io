@@ -4,7 +4,7 @@
  */
 
 // Configuration
-const WORKER_URL = "https://braille-translator.YOUR-SUBDOMAIN.workers.dev";
+const WORKER_URL = "https://braille-translator.saraspap.workers.dev";
 // For local development: 'http://localhost:8787'
 
 /**
