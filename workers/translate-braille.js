@@ -7,12 +7,12 @@ export default {
   async fetch(request, env, ctx) {
     // Handle CORS preflight requests
     if (request.method === "OPTIONS") {
-      return handleCORS();
+      return handleCORS(request);
     }
 
     // Only allow POST requests
     if (request.method !== "POST") {
-      return jsonResponse({ error: "Method not allowed" }, 405);
+      return jsonResponse({ error: "Method not allowed" }, 405, request);
     }
 
     try {
@@ -21,11 +21,15 @@ export default {
 
       // Validate input
       if (!text || typeof text !== "string") {
-        return jsonResponse({ error: "Invalid text parameter" }, 400);
+        return jsonResponse({ error: "Invalid text parameter" }, 400, request);
       }
 
       if (!direction || !["toBraille", "toText"].includes(direction)) {
-        return jsonResponse({ error: "Invalid direction parameter" }, 400);
+        return jsonResponse(
+          { error: "Invalid direction parameter" },
+          400,
+          request,
+        );
       }
 
       // Rate limiting check (optional but recommended)
@@ -34,6 +38,7 @@ export default {
         return jsonResponse(
           { error: "Rate limit exceeded. Please try again later." },
           429,
+          request,
         );
       }
 
@@ -58,7 +63,7 @@ export default {
             Authorization: `Bearer ${env.OPENAI_API_KEY}`,
           },
           body: JSON.stringify({
-            model: "gpt-4", // or 'gpt-3.5-turbo' for lower cost
+            model: "gpt-3.5-turbo",
             messages: [
               { role: "system", content: systemPrompt },
               { role: "user", content: userPrompt },
@@ -75,6 +80,7 @@ export default {
         return jsonResponse(
           { error: "Translation service temporarily unavailable" },
           503,
+          request,
         );
       }
 
@@ -92,6 +98,7 @@ export default {
           },
         },
         200,
+        request,
       );
     } catch (error) {
       console.error("Worker error:", error);
@@ -101,6 +108,7 @@ export default {
           message: error.message,
         },
         500,
+        request,
       );
     }
   },
@@ -138,12 +146,26 @@ async function checkRateLimit(request, env) {
 }
 
 /**
+ * Get allowed origin based on request
+ */
+function getAllowedOrigin(request) {
+  const origin = request.headers.get("Origin");
+  const allowedOrigins = [
+    "https://pagan404.github.io",
+    "http://localhost:8080",
+    "http://127.0.0.1:8080",
+  ];
+
+  return allowedOrigins.includes(origin) ? origin : allowedOrigins[0];
+}
+
+/**
  * Handle CORS preflight requests
  */
-function handleCORS() {
+function handleCORS(request) {
   return new Response(null, {
     headers: {
-      "Access-Control-Allow-Origin": "https://pagan404.github.io", // Change to your domain in production
+      "Access-Control-Allow-Origin": getAllowedOrigin(request),
       "Access-Control-Allow-Methods": "POST, OPTIONS",
       "Access-Control-Allow-Headers": "Content-Type",
       "Access-Control-Max-Age": "86400",
@@ -154,12 +176,12 @@ function handleCORS() {
 /**
  * Helper function to create JSON responses with CORS headers
  */
-function jsonResponse(data, status = 200) {
+function jsonResponse(data, status = 200, request) {
   return new Response(JSON.stringify(data), {
     status,
     headers: {
       "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "https://pagan404.github.io", // Change to your domain in production
+      "Access-Control-Allow-Origin": getAllowedOrigin(request),
       "Access-Control-Allow-Methods": "POST, OPTIONS",
       "Access-Control-Allow-Headers": "Content-Type",
     },

@@ -14,7 +14,8 @@
     "test:integration": "NODE_OPTIONS=--experimental-vm-modules jest __integration__",
     "test:integration:watch": "NODE_OPTIONS=--experimental-vm-modules jest __integration__ --watch",
     "test:watch": "NODE_OPTIONS=--experimental-vm-modules jest --watch",
-    "test:coverage": "NODE_OPTIONS=--experimental-vm-modules jest --coverage"
+    "test:coverage": "NODE_OPTIONS=--experimental-vm-modules jest --coverage",
+    "worker:deploy": "wrangler deploy"
   },
   "jest": {
     "globals": {
