@@ -143,7 +143,7 @@ async function checkRateLimit(request, env) {
 function handleCORS() {
   return new Response(null, {
     headers: {
-      "Access-Control-Allow-Origin": "*", // Change to your domain in production
+      "Access-Control-Allow-Origin": "https://pagan404.github.io", // Change to your domain in production
       "Access-Control-Allow-Methods": "POST, OPTIONS",
       "Access-Control-Allow-Headers": "Content-Type",
       "Access-Control-Max-Age": "86400",
