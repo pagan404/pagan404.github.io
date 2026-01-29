@@ -63,7 +63,7 @@ function showSuccess(message) {
   setTimeout(() => {
     toast.classList.remove("show");
     setTimeout(() => toast.remove(), 300);
-  }, 2000);
+  }, 4000);
 }
 
 /**
