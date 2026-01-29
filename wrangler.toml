@@ -4,9 +4,9 @@ compatibility_date = "2026-01-28"
 
 # Optional: Enable rate limiting with KV storage
 # Uncomment these lines if you want rate limiting
-# kv_namespaces = [
-#   { binding = "RATE_LIMIT", id = "your-kv-namespace-id" }
-# ]
+kv_namespaces = [
+    { binding = "RATE_LIMIT", id = "fe8434e1fdc3444ca831a23ac5d30dc4" }
+]
 
 # Environment variables (secrets)
 # These will be set via: wrangler secret put OPENAI_API_KEY
