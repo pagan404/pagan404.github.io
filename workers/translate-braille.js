@@ -159,7 +159,7 @@ function jsonResponse(data, status = 200) {
     status,
     headers: {
       "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*", // Change to your domain in production
+      "Access-Control-Allow-Origin": "https://pagan404.github.io", // Change to your domain in production
       "Access-Control-Allow-Methods": "POST, OPTIONS",
       "Access-Control-Allow-Headers": "Content-Type",
     },
