@@ -45,8 +45,8 @@ export default {
       // Prepare LLM prompt based on direction
       const systemPrompt =
         direction === "toBraille"
-          ? "You are a precise Braille Grade 2 translator. Convert text to Braille Unicode characters using proper Grade 2 contractions. Output ONLY the Braille characters with no explanation, formatting, or extra text."
-          : "You are a precise Braille Grade 2 translator. Convert Braille Unicode characters to plain English text. Output ONLY the translated text with no explanation, formatting, or extra text.";
+          ? "You are a precise English Braille Grade 2 translator. Convert text to Braille Unicode characters using proper Grade 2 rules, including proper marking of numbers, capital letters and symbols, also use proper grade 2 contractions. Output ONLY the Braille characters with no explanation, formatting, or extra text."
+          : "You are a precise English Braille Grade 2 translator. Convert Braille Unicode characters to plain English text. The text you are provided may contain capital letters, numbers, symbols and contractions. The text you are translating back to English, should make grammatical sense. Output ONLY the translated text with no explanation, formatting, or extra text.";
 
       const userPrompt =
         direction === "toBraille"
@@ -54,52 +54,106 @@ export default {
           : `Translate this Braille to plain text: ${text}`;
 
       // Call OpenAI API
-      const llmResponse = await fetch(
-        "https://api.openai.com/v1/chat/completions",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${env.OPENAI_API_KEY}`,
-          },
-          body: JSON.stringify({
-            model: "gpt-3.5-turbo",
-            messages: [
-              { role: "system", content: systemPrompt },
-              { role: "user", content: userPrompt },
-            ],
-            temperature: 0.1, // Low temperature for consistency
-            max_tokens: 2000,
-          }),
-        },
-      );
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 25000);
 
-      if (!llmResponse.ok) {
-        const errorData = await llmResponse.json();
-        console.error("LLM API error:", errorData);
+      try {
+        const llmResponse = await fetch(
+          "https://api.openai.com/v1/chat/completions",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${env.OPENAI_API_KEY}`,
+            },
+            body: JSON.stringify({
+              model: "gpt-5.2",
+              messages: [
+                { role: "system", content: systemPrompt },
+                { role: "user", content: userPrompt },
+              ],
+              temperature: 0.1,
+              max_completion_tokens: 500, 
+            }),
+            signal: controller.signal,
+          },
+        );
+
+        clearTimeout(timeoutId);
+
+        if (!llmResponse.ok) {
+          const errorData = await llmResponse.json();
+          console.error("LLM API error:", errorData);
+          return jsonResponse(
+            { error: "Translation service temporarily unavailable" },
+            503,
+            request,
+          );
+        }
+
+        const llmData = await llmResponse.json();
+
+        // ✅ Validate response structure
+        if (
+          !llmData.choices ||
+          !llmData.choices[0] ||
+          !llmData.choices[0].message
+        ) {
+          console.error("Invalid LLM response structure:", llmData);
+          return jsonResponse(
+            { error: "Invalid response from translation service" },
+            500,
+            request,
+          );
+        }
+
+        const translatedText = llmData.choices[0].message.content?.trim() || "";
+
+        // ✅ Check for empty result
+        if (!translatedText) {
+          console.error("Empty translation result for input:", text);
+          return jsonResponse(
+            { error: "Translation returned empty result" },
+            500,
+            request,
+          );
+        }
+
+        // ✅ Detailed logging
+        console.log("Translation success:", {
+          inputLength: text.length,
+          outputLength: translatedText.length,
+          finishReason: llmData.choices[0].finish_reason,
+          tokens: llmData.usage.total_tokens,
+        });
+
         return jsonResponse(
-          { error: "Translation service temporarily unavailable" },
-          503,
+          {
+            result: translatedText,
+            usage: {
+              promptTokens: llmData.usage.prompt_tokens,
+              completionTokens: llmData.usage.completion_tokens,
+              totalTokens: llmData.usage.total_tokens,
+            },
+          },
+          200,
           request,
         );
+      } catch (error) {
+        clearTimeout(timeoutId);
+        if (error.name === "AbortError") {
+          console.error("Request timeout");
+          return jsonResponse(
+            {
+              error:
+                "Translation request timed out. Please try a shorter text.",
+            },
+            504,
+            request,
+          );
+        }
+        throw error;
       }
-
-      const llmData = await llmResponse.json();
-      const translatedText = llmData.choices[0].message.content.trim();
-
-      // Return successful response with CORS headers
-      return jsonResponse(
-        {
-          result: translatedText,
-          usage: {
-            promptTokens: llmData.usage.prompt_tokens,
-            completionTokens: llmData.usage.completion_tokens,
-            totalTokens: llmData.usage.total_tokens,
-          },
-        },
-        200,
-        request,
-      );
     } catch (error) {
       console.error("Worker error:", error);
       return jsonResponse(
