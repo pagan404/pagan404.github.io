@@ -11,6 +11,20 @@ const encodedToTextBtn = document.getElementById("encoded-to-text");
 const clearAllBtn = document.getElementById("clear-all");
 const copyResultBtn = document.getElementById("copy-result");
 
+// Character limit
+const MAX_CHARS = 500;
+
+/**
+ * Validate input length
+ */
+function validateInputLength(textarea, outputTextarea) {
+  if (textarea.value.length > MAX_CHARS) {
+    outputTextarea.value = `Error: Input too large (max ${MAX_CHARS} characters)`;
+    return false;
+  }
+  return true;
+}
+
 /**
  * Manage button loading states
  */
@@ -21,7 +35,6 @@ function setLoading(button, isLoading) {
     button.dataset.originalText = button.textContent;
     button.classList.add("loading");
 
-    // Add spinner or loading text
     const spinner = "⟳ ";
     button.textContent = spinner + "Translating...";
   } else {
@@ -34,16 +47,13 @@ function setLoading(button, isLoading) {
  * Show error messages to user
  */
 function showError(message) {
-  // Create a simple toast notification
   const toast = document.createElement("div");
   toast.className = "error-toast";
   toast.textContent = message;
   document.body.appendChild(toast);
 
-  // Animate in
   setTimeout(() => toast.classList.add("show"), 10);
 
-  // Remove after 4 seconds
   setTimeout(() => {
     toast.classList.remove("show");
     setTimeout(() => toast.remove(), 300);
@@ -66,6 +76,15 @@ function showSuccess(message) {
   }, 4000);
 }
 
+// Add input event listeners for real-time validation
+textInput.addEventListener("input", () => {
+  validateInputLength(textInput, encodedOutput);
+});
+
+encodedOutput.addEventListener("input", () => {
+  validateInputLength(encodedOutput, textInput);
+});
+
 /**
  * Text to Braille conversion
  */
@@ -73,7 +92,12 @@ textToEncodedBtn.addEventListener("click", async () => {
   const text = textInput.value.trim();
 
   if (!text) {
-    showError("Please enter some text to translate");
+    encodedOutput.value = "";
+    return;
+  }
+
+  // Validate input length
+  if (!validateInputLength(textInput, encodedOutput)) {
     return;
   }
 
@@ -85,7 +109,7 @@ textToEncodedBtn.addEventListener("click", async () => {
     showSuccess("Translation complete!");
   } catch (error) {
     console.error("Translation error:", error);
-    showError(error.message);
+    encodedOutput.value = "Error: " + error.message;
   } finally {
     setLoading(textToEncodedBtn, false);
   }
@@ -98,7 +122,12 @@ encodedToTextBtn.addEventListener("click", async () => {
   const braille = encodedOutput.value.trim();
 
   if (!braille) {
-    showError("Please enter some Braille to translate");
+    textInput.value = "";
+    return;
+  }
+
+  // Validate input length
+  if (!validateInputLength(encodedOutput, textInput)) {
     return;
   }
 
@@ -110,7 +139,7 @@ encodedToTextBtn.addEventListener("click", async () => {
     showSuccess("Translation complete!");
   } catch (error) {
     console.error("Translation error:", error);
-    showError(error.message);
+    textInput.value = "Error: " + error.message;
   } finally {
     setLoading(encodedToTextBtn, false);
   }
