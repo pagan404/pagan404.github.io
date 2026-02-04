@@ -44,6 +44,25 @@ function setLoading(button, isLoading) {
 }
 
 /**
+ * Position toast above footer dynamically
+ */
+function positionToast(toast) {
+  const footer = document.querySelector("footer");
+  if (!footer) return;
+
+  const footerRect = footer.getBoundingClientRect();
+  const footerTop = footerRect.top;
+  const windowHeight = window.innerHeight;
+  const offset = 20; // 20px gap above footer
+
+  // Calculate bottom position: distance from bottom of viewport to footer top + offset
+  const bottomPosition = windowHeight - footerTop + offset;
+
+  // Use a minimum of 20px on small screens
+  toast.style.bottom = `${Math.max(bottomPosition, 20)}px`;
+}
+
+/**
  * Show error messages to user
  */
 function showError(message) {
@@ -51,6 +70,9 @@ function showError(message) {
   toast.className = "error-toast";
   toast.textContent = message;
   document.body.appendChild(toast);
+
+  // Position above footer
+  positionToast(toast);
 
   setTimeout(() => toast.classList.add("show"), 10);
 
@@ -69,12 +91,22 @@ function showSuccess(message) {
   toast.textContent = message;
   document.body.appendChild(toast);
 
+  // Position above footer
+  positionToast(toast);
+
   setTimeout(() => toast.classList.add("show"), 10);
   setTimeout(() => {
     toast.classList.remove("show");
     setTimeout(() => toast.remove(), 300);
   }, 4000);
 }
+
+// Reposition toasts on window resize
+window.addEventListener("resize", () => {
+  document
+    .querySelectorAll(".error-toast, .success-toast")
+    .forEach(positionToast);
+});
 
 // Add input event listeners for real-time validation
 textInput.addEventListener("input", () => {
