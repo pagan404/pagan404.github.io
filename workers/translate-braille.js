@@ -184,8 +184,8 @@ async function checkRateLimit(request, env) {
   const currentCount = await env.RATE_LIMIT.get(rateLimitKey);
   const count = currentCount ? parseInt(currentCount) : 0;
 
-  // Allow 20 requests per minute
-  const LIMIT = 20;
+  // Allow 60 requests per minute
+  const LIMIT = 60;
 
   if (count >= LIMIT) {
     return { allowed: false };
