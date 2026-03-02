@@ -19,7 +19,7 @@ export async function translateBrailleLLM(text, direction = "toBraille") {
   }
 
   try {
-    const response = await fetch(WORKER_URL, {
+    const response = await fetchWithRetry(WORKER_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -66,4 +66,23 @@ export async function textToBrailleLLM(text) {
 export async function brailleToTextLLM(braille) {
   const response = await translateBrailleLLM(braille, "toText");
   return response.result;
+}
+
+async function fetchWithRetry(url, options, maxRetries = 2) {
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      const response = await fetch(url, options);
+      if (response.ok || response.status === 400) {
+        return response; // Success or client error (no retry)
+      }
+      if (attempt < maxRetries && response.status >= 500) {
+        await new Promise((r) => setTimeout(r, 1000 * (attempt + 1))); // Exponential backoff
+        continue;
+      }
+      return response;
+    } catch (error) {
+      if (attempt === maxRetries) throw error;
+      await new Promise((r) => setTimeout(r, 1000 * (attempt + 1)));
+    }
+  }
 }
