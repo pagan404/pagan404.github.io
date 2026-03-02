@@ -63,42 +63,29 @@ function positionToast(toast) {
 }
 
 /**
- * Show error messages to user
+ * Show toast messages to user
  */
-function showError(message) {
+function showToast(message, type = "success") {
   const toast = document.createElement("div");
-  toast.className = "error-toast";
+  toast.className = `${type}-toast`;
   toast.textContent = message;
   document.body.appendChild(toast);
 
-  // Position above footer
   positionToast(toast);
 
   setTimeout(() => toast.classList.add("show"), 10);
-
   setTimeout(() => {
     toast.classList.remove("show");
     setTimeout(() => toast.remove(), 300);
   }, 4000);
 }
 
-/**
- * Show success messages to user
- */
+function showError(message) {
+  showToast(message, "error");
+}
+
 function showSuccess(message) {
-  const toast = document.createElement("div");
-  toast.className = "success-toast";
-  toast.textContent = message;
-  document.body.appendChild(toast);
-
-  // Position above footer
-  positionToast(toast);
-
-  setTimeout(() => toast.classList.add("show"), 10);
-  setTimeout(() => {
-    toast.classList.remove("show");
-    setTimeout(() => toast.remove(), 300);
-  }, 4000);
+  showToast(message, "success");
 }
 
 // Reposition toasts on window resize
