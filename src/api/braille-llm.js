@@ -76,7 +76,7 @@ async function fetchWithRetry(url, options, maxRetries = 2) {
         return response; // Success or client error (no retry)
       }
       if (attempt < maxRetries && response.status >= 500) {
-        await new Promise((r) => setTimeout(r, 1000 * (attempt + 1))); // Exponential backoff
+        await new Promise((r) => setTimeout(r, 1000 * (attempt + 1))); // Linear backoff
         continue;
       }
       return response;
