@@ -1,0 +1,161 @@
+import { useState } from "react";
+import { useBrailleTranslation } from "../hooks/useBrailleTranslation";
+import { useToast } from "../hooks/useToast";
+import { Toast, Button } from "../components/ui";
+
+const MAX_CHARS = 500;
+
+function Workshop() {
+  const [textInput, setTextInput] = useState("");
+  const [brailleOutput, setBrailleOutput] = useState("");
+  const { translateToBraille, translateToText, isLoading } =
+    useBrailleTranslation();
+  const { toast, showSuccess, showError, hideToast } = useToast();
+
+  const validateLength = (value, outputSetter) => {
+    if (value.length > MAX_CHARS) {
+      outputSetter(`Error: Input too large (max ${MAX_CHARS} characters)`);
+      return false;
+    }
+    return true;
+  };
+
+  const handleTextToBraille = async () => {
+    const text = textInput.trim();
+    if (!text) {
+      setBrailleOutput("");
+      return;
+    }
+
+    if (!validateLength(text, setBrailleOutput)) return;
+
+    try {
+      const result = await translateToBraille(text);
+      setBrailleOutput(result);
+      showSuccess("Translation complete!");
+    } catch (error) {
+      setBrailleOutput(`Error: ${error.message}`);
+    }
+  };
+
+  const handleBrailleToText = async () => {
+    const braille = brailleOutput.trim();
+    if (!braille) {
+      setTextInput("");
+      return;
+    }
+
+    if (!validateLength(braille, setTextInput)) return;
+
+    try {
+      const result = await translateToText(braille);
+      setTextInput(result);
+      showSuccess("Translation complete!");
+    } catch (error) {
+      setTextInput(`Error: ${error.message}`);
+    }
+  };
+
+  const handleClear = () => {
+    setTextInput("");
+    setBrailleOutput("");
+    showSuccess("Cleared!");
+  };
+
+  const handleCopy = async () => {
+    if (!brailleOutput) {
+      showError("Nothing to copy");
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(brailleOutput);
+      showSuccess("Copied to clipboard!");
+    } catch {
+      showError("Failed to copy to clipboard");
+    }
+  };
+
+  const handleTextInputChange = (e) => {
+    const value = e.target.value;
+    setTextInput(value);
+    validateLength(value, setBrailleOutput);
+  };
+
+  const handleBrailleOutputChange = (e) => {
+    const value = e.target.value;
+    setBrailleOutput(value);
+    validateLength(value, setTextInput);
+  };
+
+  return (
+    <div className="workshop">
+      <div className="encodings-container">
+        <div className="converter-container">
+          <div className="converter-help">
+            <strong>How to use:</strong>
+            <span>
+              Enter text in the left box to translate to Braille, or enter
+              Braille in the right box to translate to text.
+            </span>
+          </div>
+
+          <div className="converter-warning">
+            <strong>⚠️ Note:</strong> The tool below uses AI for translating
+            text and Braille. Please take note that the translations may not be
+            entirely accurate.
+          </div>
+
+          <div className="converter-grid">
+            <div className="converter-input">
+              <label htmlFor="text-input">Plain Text:</label>
+              <textarea
+                id="text-input"
+                value={textInput}
+                onChange={handleTextInputChange}
+                placeholder="Enter text here..."
+              />
+            </div>
+
+            <div className="converter-buttons">
+              <Button
+                variant="primary"
+                onClick={handleTextToBraille}
+                loading={isLoading}
+                disabled={isLoading}
+              >
+                → Translate to Braille
+              </Button>
+              <Button
+                variant="secondary"
+                onClick={handleBrailleToText}
+                loading={isLoading}
+                disabled={isLoading}
+              >
+                ← Translate to Text
+              </Button>
+              <Button onClick={handleClear}>Clear All</Button>
+            </div>
+
+            <div className="converter-output">
+              <label htmlFor="braille-output">Braille Output:</label>
+              <textarea
+                id="braille-output"
+                value={brailleOutput}
+                onChange={handleBrailleOutputChange}
+                placeholder="Braille will appear here..."
+              />
+              <Button onClick={handleCopy}>Copy Result</Button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {toast && (
+        <Toast message={toast.message} type={toast.type} onClose={hideToast} />
+      )}
+    </div>
+  );
+}
+
+export default Workshop;
