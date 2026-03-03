@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Header, Footer } from "./components/layout";
-import { Home } from "./pages";
+import { Home, Workshop } from "./pages";
 
 // Placeholder pages - we'll build these in later phases
 function Articles() {
@@ -16,15 +16,6 @@ function Encodings() {
   return (
     <div className="read-my-blog">
       <h1>Encodings Page</h1>
-      <p>Coming soon...</p>
-    </div>
-  );
-}
-
-function Workshop() {
-  return (
-    <div className="read-my-blog">
-      <h1>Workshop Page</h1>
       <p>Coming soon...</p>
     </div>
   );
