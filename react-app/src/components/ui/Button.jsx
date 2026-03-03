@@ -3,7 +3,7 @@ function Button({
   onClick,
   disabled = false,
   loading = false,
-  variant = "default", // 'default', 'primary', 'secondary'
+  variant = "default", // 'default', 'primary', 'secondary', 'danger', 'success'
   className = "",
   ...props
 }) {
