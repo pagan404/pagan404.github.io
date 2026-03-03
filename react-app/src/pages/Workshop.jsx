@@ -90,13 +90,14 @@ function Workshop() {
 
   return (
     <div className="workshop">
-      {/* Page Title */}
-      <h1 className="encodings-title">Braille Converter</h1>
-      <p className="encodings-subtitle">
-        Convert text to Braille and back using the tool below.
-      </p>
-
       <div className="encodings-container">
+        {/* Page header - INSIDE encodings-container like original */}
+        <div className="page-header">
+          <h1>Braille Converter</h1>
+          <p>Convert text to Braille and back using the tool below.</p>
+        </div>
+
+        {/* Converter Interface */}
         <div className="converter-container">
           <div className="converter-help">
             <strong>How to use:</strong>
@@ -112,31 +113,37 @@ function Workshop() {
             entirely accurate.
           </div>
 
-          {/* Two-column layout for inputs */}
-          <div className="converter-panels">
-            <div className="converter-panel">
+          {/* Use original class: converter-grid */}
+          <div className="converter-grid">
+            {/* Use original class: input-section */}
+            <div className="input-section">
               <h3>Text Input</h3>
               <textarea
                 id="text-input"
+                className="converter-textarea"
                 value={textInput}
                 onChange={handleTextInputChange}
                 placeholder="Enter your text here..."
               />
             </div>
 
-            <div className="converter-panel">
+            {/* Use original class: output-section */}
+            <div className="output-section">
               <h3>Braille Output</h3>
-              <textarea
-                id="braille-output"
-                value={brailleOutput}
-                onChange={handleBrailleOutputChange}
-                placeholder="Encoded text will appear here..."
-              />
+              <div className="encoded-output-wrapper">
+                <textarea
+                  id="braille-output"
+                  className="converter-textarea"
+                  value={brailleOutput}
+                  onChange={handleBrailleOutputChange}
+                  placeholder="Encoded text will appear here..."
+                />
+              </div>
             </div>
           </div>
 
-          {/* Buttons row */}
-          <div className="converter-actions">
+          {/* Use original class: converter-controls */}
+          <div className="converter-controls">
             <Button
               variant="primary"
               onClick={handleTextToBraille}
