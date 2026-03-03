@@ -90,13 +90,19 @@ function Workshop() {
 
   return (
     <div className="workshop">
+      {/* Page Title */}
+      <h1 className="encodings-title">Braille Converter</h1>
+      <p className="encodings-subtitle">
+        Convert text to Braille and back using the tool below.
+      </p>
+
       <div className="encodings-container">
         <div className="converter-container">
           <div className="converter-help">
             <strong>How to use:</strong>
             <span>
-              Enter text in the left box to translate to Braille, or enter
-              Braille in the right box to translate to text.
+              Enter text in the left box to see encoded text, or enter encoded
+              text in the right box to see decoded text.
             </span>
           </div>
 
@@ -106,47 +112,53 @@ function Workshop() {
             entirely accurate.
           </div>
 
-          <div className="converter-grid">
-            <div className="converter-input">
-              <label htmlFor="text-input">Plain Text:</label>
+          {/* Two-column layout for inputs */}
+          <div className="converter-panels">
+            <div className="converter-panel">
+              <h3>Text Input</h3>
               <textarea
                 id="text-input"
                 value={textInput}
                 onChange={handleTextInputChange}
-                placeholder="Enter text here..."
+                placeholder="Enter your text here..."
               />
             </div>
 
-            <div className="converter-buttons">
-              <Button
-                variant="primary"
-                onClick={handleTextToBraille}
-                loading={isLoading}
-                disabled={isLoading}
-              >
-                → Translate to Braille
-              </Button>
-              <Button
-                variant="secondary"
-                onClick={handleBrailleToText}
-                loading={isLoading}
-                disabled={isLoading}
-              >
-                ← Translate to Text
-              </Button>
-              <Button onClick={handleClear}>Clear All</Button>
-            </div>
-
-            <div className="converter-output">
-              <label htmlFor="braille-output">Braille Output:</label>
+            <div className="converter-panel">
+              <h3>Braille Output</h3>
               <textarea
                 id="braille-output"
                 value={brailleOutput}
                 onChange={handleBrailleOutputChange}
-                placeholder="Braille will appear here..."
+                placeholder="Encoded text will appear here..."
               />
-              <Button onClick={handleCopy}>Copy Result</Button>
             </div>
+          </div>
+
+          {/* Buttons row */}
+          <div className="converter-actions">
+            <Button
+              variant="primary"
+              onClick={handleTextToBraille}
+              loading={isLoading}
+              disabled={isLoading}
+            >
+              Text → Braille
+            </Button>
+            <Button
+              variant="secondary"
+              onClick={handleBrailleToText}
+              loading={isLoading}
+              disabled={isLoading}
+            >
+              Braille → Text
+            </Button>
+            <Button variant="danger" onClick={handleClear}>
+              Clear All
+            </Button>
+            <Button variant="success" onClick={handleCopy}>
+              Copy Result
+            </Button>
           </div>
         </div>
       </div>
