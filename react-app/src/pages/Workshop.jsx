@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { useBrailleTranslation } from "../hooks/useBrailleTranslation";
-import { useToast } from "../hooks/useToast";
+import { useBrailleTranslation, useToast } from "../hooks";
 import { Toast, Button } from "../components/ui";
 
 const MAX_CHARS = 500;
