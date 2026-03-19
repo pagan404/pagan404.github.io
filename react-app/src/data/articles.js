@@ -1,5 +1,14 @@
 const articles = [
   {
+    title: "Book Reviews — Governance and Civics",
+    date: "Originally published on February 19th, 2026",
+    image: "/images/Governance&Civics.webp",
+    alt: "Governance and Civics",
+    url: "https://pagan404.medium.com/book-reviews-governance-and-civics-ff16de43a148",
+    summary:
+      "The civics classes in my school were poor. I tried to catch up by reading up on the topic, here I review some of the books on Governance and Civics that I recently read.",
+  },
+  {
     title: "Free Bitcoin Forensics - Part 1",
     date: "Originally published on December 10th, 2020",
     image: "/images/BTC-Forensics-1.webp",
