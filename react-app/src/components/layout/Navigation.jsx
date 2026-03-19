@@ -7,12 +7,6 @@ function Navigation() {
         Home
       </NavLink>
       <NavLink
-        to="/articles"
-        className={({ isActive }) => (isActive ? "active" : "")}
-      >
-        Articles
-      </NavLink>
-      <NavLink
         to="/encodings"
         className={({ isActive }) => (isActive ? "active" : "")}
       >
